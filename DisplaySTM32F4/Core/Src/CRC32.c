@@ -1,7 +1,7 @@
 /*
  * CRC32.c
  *
- *  Created on: 23 ���. 2020 �.
+ *  Created on: 23 ���. 2020 �.
  *      Author: Mitin N.D.
  */
 #include "main.h"
@@ -78,19 +78,19 @@ const uint_least32_t Crc32Table[256] = {
 // given below for documentation purposes. An equivalent implementation
 // of this function that's actually used in the kernel can be found
 //in sys/libkern.h, where it can be inlined.
-
-void CRC32_Put(buffer_t *crc_buf, uint8_t byte)
-{
-	if(crc_buf->tail < 1200)
-		crc_buf->buf[crc_buf->tail++] = byte;
-}
-
-
-
 uint_least32_t Crc32(const unsigned char *buf, size_t len)
 {
     uint_least32_t crc = 0xFFFFFFFF;
     while (len--)
         crc = (crc >> 8) ^ Crc32Table[(crc ^ *buf++) & 0xFF];
     return crc ^ 0xFFFFFFFF;
+}
+
+/*
+ * Функция, кладет байт в буфер CRC
+ */
+void CRC32_Put(buffer_t *crc_buf, uint8_t byte)
+{
+	if(crc_buf->tail < 1200)
+		crc_buf->buf[crc_buf->tail++] = byte;
 }

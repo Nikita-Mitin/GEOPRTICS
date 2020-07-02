@@ -45,8 +45,8 @@ extern "C" {
 
 /********************************* DEFINES ************************************/
 
-// ВЕРСИЯ ПО - ИЮЛЬ 1.0
-#define VERS "ИЮЛЬ 1.0"
+// ВЕРС�?Я ПО - �?ЮЛЬ 1.0
+#define VERS "�?ЮЛЬ 1.0"
 
 /*------------------------- НАСТРА�?ВАЕМЫЕ ЗНАЧЕН�?Я ---------------------------*/
 #define string_size 		60					// макс_количество_символов_в_строке
@@ -59,17 +59,21 @@ extern "C" {
 #define degree_sym_amount	4					// максимальное_количество_знаков_градуса_в_строке
 #define UartBufSize 		4096				// размер_буфера_UART
 
-#define UP_TIME 			86400*2				// время_засыпания_дисплея
+#define UP_TIME 			86400				// время_засыпания_дисплея
 #define UP_TIME_small		240					// время_засыпания_дисплея_в_режме_сна
 #define transmit_time		500					// период_отправок_на_материнку
 
 #define scroll_speed		15					// скорость_пролистывания_строк_при_долгом_нажатии (строк_в_секунду)
 #define scroll_delay		600					// время_удержания_кнопки_до_начала_пролистывания (мс)
 #define OFF_delay			3000				// время_удержания_кнопки_выключения_до_запуска_отключения (мс)
-#define PowerOFF_delay		5000				// задержка_после_начала_выключения
+#define PowerOFF_delay		600000				// задержка_после_начала_выключения
 #define start_pause			600					// задержка_перед_стартом_дисплея (длительность_стартового_мигания)
 #define Button_Zummer		10					// задержка_на_писк_зумера_при_нажатии_кнопки
+#define mother_wdgtime		600000				// время_ожидания_от_материнки_данных. Если_данные_не_поступают_за_это_время_производится_перезапуск_материнки
 
+#define service_but_delay	3000				// время_удержания_сервисной_комбинации_кнопок
+
+#define ADC_12v_reset_val	3					// если_АЦП_12В_выше_порого_такое_количество_раз_то_выключаем_материнку
 
 #define pack_DELAY			150					// задержка_между_получением_пакета_и_началом_парсинга
 #define restart_time		550					// время_после_которого_перезапускается_UART_при_отсутствии_приема_данных
@@ -114,12 +118,13 @@ extern IWDG_HandleTypeDef hiwdg;
 extern TIM_HandleTypeDef htim7;
 extern ADC_HandleTypeDef hadc1;
 extern I2C_HandleTypeDef hi2c1;
+
 			/*- - - - - - - - - -  UP_time - - - - - - - - - - */
 extern uint32_t uptime_tick;
 extern uint32_t uptime;
 
 extern uint8_t display_stat;
-
+extern uint8_t HSE_status;
 /*------------------------------- STRUCTUREs ---------------------------------*/
 
 /*
@@ -213,6 +218,7 @@ uint8_t TemperatureGetData(uint16_t);
 /*--------------------------- ОБРАБОТЧ�?К�? НАЖАТ�?Й ----------------------------*/
 void PowerButtonHandler(uint32_t *,uint8_t *,uint8_t *, uint16_t); //!
 void ScrollingButtonHandler(uint8_t *, uint32_t*, uint8_t*);
+void ServiceModeButtonHandler(uint8_t *, uint8_t *, uint32_t *, uint16_t);
 
 /*------------------------------ CRC32 ФУНКЦ�?�? -------------------------------*/
 void CRC32_Put(buffer_t*, uint8_t);
@@ -243,8 +249,8 @@ void UPTIME_IRQHandler();
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define High12vThreshold 4000
-#define Low12vThreshold 0
+#define High12vThreshold 1439
+#define Low12vThreshold 1372
 #define STM32_OUT_DOG_Pin GPIO_PIN_13
 #define STM32_OUT_DOG_GPIO_Port GPIOC
 #define STM32_BUTTON_POWER_Pin GPIO_PIN_0

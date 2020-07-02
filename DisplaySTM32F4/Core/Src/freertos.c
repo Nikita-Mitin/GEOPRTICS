@@ -64,8 +64,14 @@ uint16_t ADC_val[5];						// МАСС�?В ХРАН�?Т ЗНАЧЕН�?Е А
 												// 2
 												// 3
 												// 4
+uint8_t ADC_reset_count = 0;
 uint8_t display_stat = 1;					// Переменная_статуса_дисплея
 uint8_t LEDs_stat;							// Переменная_статуса_светодиодов
+
+uint8_t UTC[8] = {'\0'};
+uint8_t UTC_show_flag = 0;
+
+uint8_t service_mode = 0;
 /******************************************************************************/
 
 
@@ -195,6 +201,10 @@ void StartDefaultTask(void const * argument)
 	HAL_IWDG_Init(&hiwdg);											// ЗАПУСК WATHDOG
 	HAL_TIM_Base_Start_IT(&htim7);									// ЗАПУСК ТАЙМЕРА UP_TIME
 	HAL_ADC_Start_DMA(&hadc1,(uint32_t*)&ADC_val, 5);				// ЗАПУСК АЦП В РЕЖ�?МЕ DMA
+
+	if(!HSE_status){
+		HAL_GPIO_WritePin(SYM_LED_B_GPIO_Port, SYM_LED_B_Pin, GPIO_PIN_SET);
+	}
   /* Infinite loop */
   for(;;)
   {
@@ -237,6 +247,7 @@ void StartDisplayTask(void const * argument)
 	uint8_t rdy_count = 0;
 	uint8_t show_count = 0;
 	uint32_t displayOFF_del = 0;
+
 /*----------------------- ФУНКЦ�?�? �?Н�?ЦАЛ�?ЗАЦ�?�? --------------------------*/
 	DisplayInit(&u8g2);											// �?Н�?Ц�?АЛ�?ЗАЦ�?Я Д�?СПЛЕЯ
 	PowerON(&u8g2);
@@ -293,6 +304,8 @@ void StartDisplayTask(void const * argument)
 
 			u8g2_SetFont(&u8g2, u8g2_font_unifont_t_cyrillic);				// УСТАНАВЛ�?ВАЕМ К�?Р�?Л�?ЧЕСК�?Й ШР�?ФТ
 
+			u8g2_SetDrawColor(&u8g2, 2);
+
 			// ВВОД�?М В БУФЕР Д�?СПЛЕЯ 4 СТРОК�?, НАЧ�?НАЯ С НАЧАЛА ПОЛОЖЕН�?Я КУРСОРА
 //			for(uint8_t i = cursor; i < cursor + 4; i++){
 //				if(i > rdy_count) i = 0;
@@ -320,6 +333,13 @@ void StartDisplayTask(void const * argument)
 
 				show_pointer = (show_pointer <= rdy_count - 2) ? show_pointer + 1 : 0;
 				show_count--;
+			}
+
+			if(UTC_show_flag){
+				u8g2_SetFontMode(&u8g2, 1);
+				u8g2_DrawBox(&u8g2, 0, 0, 254, 15);
+				u8g2_SetDrawColor(&u8g2, 2);
+				u8g2_DrawUTF8(&u8g2, 0, 15,(char *) &UTC);
 			}
 		}
 //			// ОТПРАВЛЯЕМ БУФЕР БЕЗ РЕЖ�?МОВ (ДЛЯ ОТЛАДК�?)
@@ -396,12 +416,14 @@ void StartDataTask(void const * argument)
 	uint8_t celsium_count = 0;									// СЧЕТЧ�?К ДЛЯ ЗАПОЛНЕН�?Я ЗНАКОВ ГРАДУСА ЦЕЛЬС�?Я
 	uint8_t string_count = 0;									// СЧЕТЧ�?К ДЛЯ ЗАПОЛНЕН�?Я СТРОК
 	uint32_t restart_val = 0;
+	uint8_t UTC_count = 0;
+	uint16_t UTC_pointer = 0;
 
 	osDelay(500);
 /***************************** ТЕЛО ЗАДАЧ�? *******************************/
 	for(;;){
 
-		// ЕСЛ�? rx НЕ В ПРОСТОЕ, ТО ЖДЕМ ОПРЕДЕЛЕННОЕ ВРЕМЯ
+		// ЕСЛ�? RX НЕ В ПРОСТОЕ, ТО ЖДЕМ ОПРЕДЕЛЕННОЕ ВРЕМЯ
 		// �? НАЧ�?НАЕМ ПО�?СК СТАРТОВОЙ КОМБ�?НАЦ�?�?
 		// УСЛОВ�?Е ПОМАГАЕТ ПАРС�?ТЬ НОВЫЙ ПАКЕТ ОД�?Н РАЗ
 		if(!(USART3->SR & USART_SR_IDLE)){
@@ -469,6 +491,19 @@ void StartDataTask(void const * argument)
 							}
 							else if(!string_count) datastring[stringnum].status = 1;
 
+							UTC_pointer = pointer;
+
+							if(FindString((uint8_t *)&uart_buf, UartBufSize, &UTC_pointer, "UTC", 3)){
+
+								UTC_count = 0;
+
+								while(UTC_count < 8){
+									UTC[UTC_count] = uart_buf[UTC_pointer];
+									UTC_pointer++;
+									UTC_count++;
+								}
+							}
+
 							// ЕСЛ�? НАЙДЕНА КОМБ�?НАЦ�?Я "*C" ВМЕСТО НЕЕ КЛАДЕМ В СТРОКУ ' '
 							// �? ЗАП�?СЫВАЕМ ПОЛОЖЕН�?Е ЗНАКА ГРАДУСА (string_count)
 							if(FindString((uint8_t *)&uart_buf,UartBufSize,&pointer,"*C",2)){
@@ -518,12 +553,18 @@ void StartDataTask(void const * argument)
 			HAL_UART_Receive_DMA(&huart3, (uint8_t*)uart_buf, UartBufSize);
 		}
 
+		if(HAL_GetTick() - restart_val > mother_wdgtime){
+			HAL_GPIO_WritePin(STM32_Relay_mother_GPIO_Port, STM32_Relay_mother_Pin, GPIO_PIN_RESET);
+			osDelay(1000);
+			HAL_GPIO_WritePin(STM32_Relay_mother_GPIO_Port, STM32_Relay_mother_Pin, GPIO_PIN_SET);
+		}
+
 		// ОБНАВЛЯЕМ WATHDOG
 		HAL_IWDG_Refresh(&hiwdg);
 
-		if(!HAL_GPIO_ReadPin(STM32_BUTTON_POWER_GPIO_Port, STM32_BUTTON_POWER_Pin)){
+//		if(!HAL_GPIO_ReadPin(STM32_BUTTON_POWER_GPIO_Port, STM32_BUTTON_POWER_Pin)){
 			HAL_GPIO_WritePin(STM32_BUTTON_LED_POWER_GPIO_Port, STM32_BUTTON_LED_POWER_Pin, GPIO_PIN_SET);
-		}
+//		}
 		// ПЕРЕВОД�?М ЗАДАЧУ В РЕЖ�?М ОЖ�?ДАН�?Я. ВРЕМЯ МАЛО, ЧТОБ НЕ ПРОПУСТЬ ПАКЕТ
 		osDelay(10);
 	}
@@ -590,6 +631,12 @@ void StartControlTask(void const * argument)
 	uint8_t adc_count = 0;			 							// СЧЕТЧ�?К АЦП
 	uint8_t adc_str_count = 0;									// СЧЕТЧ�?К СТРОК АЦП
 	uint8_t opt_buf[6] = {0};
+
+	uint32_t service_hold = 0;
+	uint8_t service_mem = 0;
+	uint8_t service_mem2 = 0;
+
+	uint8_t con_mem = 0;
 /*-------------------------- ФУНКЦ�?�? ЗАПУСКА ----------------------------*/
 //	HAL_ADC_Start_DMA(&hadc1,(uint32_t*)&ADC_val,5);			// ЗАПУСК АЦП В РЕЖ�?МЕ DMA
 
@@ -603,6 +650,7 @@ void StartControlTask(void const * argument)
 
 		// ПР�?Н�?МАЕМ ЗНАЧЕН�?Е КУРСОР �?З ЗАДАЧ�? StartDisplayTask
 		xQueueReceive(myCursorQueueHandle,&cursor, 10);
+
 		// ОБРАБАТЫВАЕМ КНОПК�? ПРОКРУТК�? Д�?СПЛЕЯ
 		ScrollingButtonHandler(&cursor, &butthold, &butmem);
 
@@ -612,7 +660,17 @@ void StartControlTask(void const * argument)
 		// ОБРАБАТЫВАЕМ КНОПКУ ОТКЛЮЧЕН�?Я П�?ТАН�?Я
 		PowerButtonHandler(&power_butthold, &power_butmem, &switch_off, OFF_delay - 1000);
 
+//		ServiceModeButtonHandler(&service_mem, &service_mem2, &service_hold, service_but_delay);
+
+//		ConnHandler(&con_mem);
+
 /*----------- ЗАП�?СЫВАЕМ СОСТОЯН�?Е КНОПОК В МАСС�?В СОСТОЯН�?Я -----------*/
+		if(butmem & STM32_BUTTON_2_Pin){
+			flash_on = 1;
+			UTC_show_flag = 1;
+		}
+		else UTC_show_flag = 0;
+
 		but_buf[0] = butmem & STM32_BUTTON_1_Pin;						// КНОПКА ПРОКУРТК�? ВН�?З
 		but_buf[1] = butmem & STM32_BUTTON_2_Pin;						// КНОПКА ПРОКРУТК�? ВВЕРХ
 		but_buf[2] = flash_on;											// КНОПКА ЗАП�?С�? ВО ФЛЭШ
@@ -851,15 +909,16 @@ void StartControlTask(void const * argument)
 			HAL_UART_Transmit(&huart3,(uint8_t *) &sendBuf, sB_pointer, 0xFFFF); // ОТПРАВЛЯЕМ МАСС�?В
 		}
 
-
-/*------------ ОБРАБАТЫВАЕМ КНОПК�? ВЫКЛЮЧЕН�?Я �? ЗАП�?С�? FLASH --------------*/
-		if(but_buf[3] && (HAL_GetTick() - power_butthold > OFF_delay)){
-			PowerOFF(&active.DISP);												// КНОПКА ВЫКЛЮЧЕН�?Я
+		if(HAL_GetTick() - transmit_timer > transmit_time * 3){
+			flash_on = 0;
 		}
 
+/*------------ ОБРАБАТЫВАЕМ КНОПК�? ВЫКЛЮЧЕН�?Я �? ЗАП�?С�? FLASH --------------*/
+//		if(but_buf[3] && (HAL_GetTick() - power_butthold > OFF_delay)){
+//			PowerOFF(&active.DISP);												// КНОПКА ВЫКЛЮЧЕН�?Я
+//		}
+
 		if(but_buf[2]) FlashWriteStart();										// КНОПКА ФЛЭШ (ПОКА НЕ ГОТОВ)
-
-
 
 		osDelay(50);
 	}
@@ -956,6 +1015,39 @@ void UPTIME_IRQHandler(){
 	uptime_tick++;
 }
 
+void ADC_Read12vHandler(){
+	UBaseType_t uxSavedInterruptStatus;
+
+	// ПРОВЕРЯЕМ УСЛОВ�?Е, ЧТО П�?ТАН�?Е 12 В
+	// ЕСЛ�? ДА, ТО ПРОДОЛЖАЕМ
+	// ЕСЛ�? НЕТ, ТО ВКЛЮЧАЕМ ЗУМЕРЫ В Ц�?КЛЕ
+
+	uxSavedInterruptStatus = taskENTER_CRITICAL_FROM_ISR ();
+
+	if(ADC_val[4] < Low12vThreshold || ADC_val[4] > High12vThreshold){
+		ADC_reset_count++;
+	}
+
+	if(ADC_reset_count > ADC_12v_reset_val){
+
+		HAL_GPIO_WritePin(STM32_Relay_mmn_GPIO_Port, STM32_Relay_mmn_Pin, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(STM32_Relay_mother_GPIO_Port, STM32_Relay_mother_Pin, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(STM32_RS_DC_DC_GPIO_Port, STM32_RS_DC_DC_Pin, GPIO_PIN_RESET);
+
+		HAL_GPIO_WritePin(STM32_ZUMMER_GPIO_Port, STM32_ZUMMER_Pin, GPIO_PIN_SET);
+
+		ADC_reset_count = 0;
+
+		while(ADC_reset_count < ADC_12v_reset_val){
+			if(ADC_val[4] < Low12vThreshold || ADC_val[4] > High12vThreshold){
+				ADC_reset_count++;
+			}
+		}
+	}
+
+	HAL_GPIO_WritePin(STM32_ZUMMER_GPIO_Port, STM32_ZUMMER_Pin, GPIO_PIN_RESET);
+	taskEXIT_CRITICAL_FROM_ISR(uxSavedInterruptStatus);
+}
 
 //void WriteToMemory_I2C(uint32_t *data){
 ////	HAL_I2C_Master_Transmit(&hi2c1,0b001, &i2c_go, 2, 1000);
@@ -1059,6 +1151,11 @@ void PowerON(u8g2_t* u8g2){
 
 	// ТУШ�?М Д�?СПЛЕЙ
 	u8g2_ClearDisplay(u8g2);
+
+	// ТУШ�?М СВЕТОД�?ОДЫ
+	HAL_GPIO_WritePin(BLUE_232_GPIO_Port, BLUE_232_Pin, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(BLUE_422_GPIO_Port, BLUE_422_Pin, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(BLUE_485_GPIO_Port, BLUE_485_Pin, GPIO_PIN_RESET);
 
 	// ВЫКЛЮЧАЕМ ЗУМЕРЫ
 	HAL_GPIO_WritePin(STM32_ZUMMER_GPIO_Port, STM32_ZUMMER_Pin, GPIO_PIN_RESET);
@@ -1189,7 +1286,7 @@ uint8_t TemperatureGetData(uint16_t ADCResult){
 /*
  * КЛАДЕТ ТЕКСТ ОШ�?БК�? В 1-Ю СТРОКУ КОНТРОЛЬНЫХ СТРОК
  */
-void PutERROR(string_t *error_string,const char *error_tekst){
+void PutERROR(string_t *error_string, const char *error_tekst){
 
 	// Ч�?СТ�?М СТРОКУ
 	for(uint8_t i = 0; i < string_size; i++){
@@ -1306,20 +1403,21 @@ void ScrollingButtonHandler(uint8_t *cursor, uint32_t *butthold,uint8_t *butmem)
 	*butmem = STM32_BUTTON_LED_1_GPIO_Port->IDR;						 // т.к_порт_кнопок_один
 }
 
-void ServiceModeButtonHandler(uint8_t *mem, uint32_t *hold, uint16_t service_delay){
+
+void ServiceModeButtonHandler(uint8_t *mem, uint8_t *mem2, uint32_t *hold, uint16_t service_delay){
 
 	if(HAL_GPIO_ReadPin(STM32_BUTTON_1_GPIO_Port, STM32_BUTTON_1_Pin)
 			&& HAL_GPIO_ReadPin(STM32_BUTTON_2_GPIO_Port, STM32_BUTTON_2_Pin)){
 
 		// ЕСЛ�? КНОПКА ДО ЭТОГО НЕ БЫЛА НАЖАТА
-		if(!(*mem &  STM32_BUTTON_POWER_Pin)){
+		if(!(*mem & (STM32_BUTTON_1_Pin | STM32_BUTTON_2_Pin))){
 
 			// НАЧ�?НАЕТ ОТСЧЕТ ВРЕМЕН�?
 			*hold = HAL_GetTick();
 		}
 		// ЕСЛ�? ПРОШЛО ОПРЕДЕЛЕННОЕ ВРЕМЯ �? КНОПКА ВСЕ ЕЩЕ НАЖАТА, ТО ПОДН�?МАЕМ ФЛАГ
-		if((HAL_GetTick() - *hold) > service_delay){
-
+		if(((HAL_GetTick() - *hold) > service_delay) && *mem2 == 0){
+			*mem2 = 1;
 			HAL_GPIO_WritePin(STM32_ZUMMER_GPIO_Port, STM32_ZUMMER_Pin, GPIO_PIN_SET);
 			osDelay(20);
 			HAL_GPIO_WritePin(STM32_ZUMMER_GPIO_Port, STM32_ZUMMER_Pin, GPIO_PIN_RESET);
@@ -1327,9 +1425,26 @@ void ServiceModeButtonHandler(uint8_t *mem, uint32_t *hold, uint16_t service_del
 			HAL_GPIO_WritePin(STM32_ZUMMER_GPIO_Port, STM32_ZUMMER_Pin, GPIO_PIN_SET);
 			osDelay(20);
 			HAL_GPIO_WritePin(STM32_ZUMMER_GPIO_Port, STM32_ZUMMER_Pin, GPIO_PIN_RESET);
+
+			service_mode = (service_mode == 0) ? 1 : 0;
+
+			datastring[serv_string_1].status = service_mode;
+			datastring[serv_string_2].status = service_mode;
+			datastring[ctrl_string_1].status = service_mode;
+			datastring[ctrl_string_2].status = service_mode;
+			datastring[ctrl_string_3].status = service_mode;
+			datastring[ctrl_string_4].status = service_mode;
+			datastring[ctrl_string_5].status = service_mode;
+			datastring[ctrl_string_6].status = service_mode;
 		}
 	}
+	else{
+		*mem2 = 0;
+	}
+
+	*mem = STM32_BUTTON_LED_1_GPIO_Port->IDR;
 }
+
 void ConnHandler(uint8_t *mem){
 
 	if(HAL_GPIO_ReadPin(STM32_Conn_1_GPIO_Port, STM32_Conn_1_Pin)){
@@ -1341,9 +1456,29 @@ void ConnHandler(uint8_t *mem){
 		}
 	}
 
+	if(!HAL_GPIO_ReadPin(STM32_Conn_1_GPIO_Port, STM32_Conn_1_Pin)){
+
+		if((*mem & STM32_Conn_1_Pin)){
+			HAL_GPIO_WritePin(STM32_ZUMMER_GPIO_Port, STM32_ZUMMER_Pin, GPIO_PIN_SET);
+			osDelay(Button_Zummer);
+			HAL_GPIO_WritePin(STM32_ZUMMER_GPIO_Port, STM32_ZUMMER_Pin, GPIO_PIN_RESET);
+		}
+	}
+
+
+
 	if(HAL_GPIO_ReadPin(STM32_Conn_2_GPIO_Port, STM32_Conn_2_Pin)){
 
 		if(!(*mem & STM32_Conn_2_Pin)){
+			HAL_GPIO_WritePin(STM32_ZUMMER_GPIO_Port, STM32_ZUMMER_Pin, GPIO_PIN_SET);
+			osDelay(Button_Zummer);
+			HAL_GPIO_WritePin(STM32_ZUMMER_GPIO_Port, STM32_ZUMMER_Pin, GPIO_PIN_RESET);
+		}
+	}
+
+	if(!HAL_GPIO_ReadPin(STM32_Conn_2_GPIO_Port, STM32_Conn_2_Pin)){
+
+		if((*mem & STM32_Conn_2_Pin)){
 			HAL_GPIO_WritePin(STM32_ZUMMER_GPIO_Port, STM32_ZUMMER_Pin, GPIO_PIN_SET);
 			osDelay(Button_Zummer);
 			HAL_GPIO_WritePin(STM32_ZUMMER_GPIO_Port, STM32_ZUMMER_Pin, GPIO_PIN_RESET);
