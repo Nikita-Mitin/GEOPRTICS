@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<libraryInfos>
+<libraryInfo home="M:\ghjuhfvvs\STM32CubeIDE_1.2.0\STM32CubeIDE" version="1.8.0_202">
+<bootpath>
+<entry path="M:\ghjuhfvvs\STM32CubeIDE_1.2.0\STM32CubeIDE\jre\lib\resources.jar"/>
+<entry path="M:\ghjuhfvvs\STM32CubeIDE_1.2.0\STM32CubeIDE\jre\lib\rt.jar"/>
+<entry path="M:\ghjuhfvvs\STM32CubeIDE_1.2.0\STM32CubeIDE\jre\lib\sunrsasign.jar"/>
+<entry path="M:\ghjuhfvvs\STM32CubeIDE_1.2.0\STM32CubeIDE\jre\lib\jsse.jar"/>
+<entry path="M:\ghjuhfvvs\STM32CubeIDE_1.2.0\STM32CubeIDE\jre\lib\jce.jar"/>
+<entry path="M:\ghjuhfvvs\STM32CubeIDE_1.2.0\STM32CubeIDE\jre\lib\charsets.jar"/>
+<entry path="M:\ghjuhfvvs\STM32CubeIDE_1.2.0\STM32CubeIDE\jre\lib\jfr.jar"/>
+<entry path="M:\ghjuhfvvs\STM32CubeIDE_1.2.0\STM32CubeIDE\jre\classes"/>
+</bootpath>
+<extensionDirs>
+<entry path="M:\ghjuhfvvs\STM32CubeIDE_1.2.0\STM32CubeIDE\jre\lib\ext"/>
+<entry path="C:\WINDOWS\Sun\Java\lib\ext"/>
+</extensionDirs>
+<endorsedDirs>
+<entry path="M:\ghjuhfvvs\STM32CubeIDE_1.2.0\STM32CubeIDE\jre\lib\endorsed"/>
+</endorsedDirs>
+</libraryInfo>
+<libraryInfo home="M:\ghjuhfvvs\STM32CubeIDE_1.2.0\STM32CubeIDE\jre" version="1.8.0_202">
+<bootpath>
+<entry path="M:\ghjuhfvvs\STM32CubeIDE_1.2.0\STM32CubeIDE\jre\lib\resources.jar"/>
+<entry path="M:\ghjuhfvvs\STM32CubeIDE_1.2.0\STM32CubeIDE\jre\lib\rt.jar"/>
+<entry path="M:\ghjuhfvvs\STM32CubeIDE_1.2.0\STM32CubeIDE\jre\lib\sunrsasign.jar"/>
+<entry path="M:\ghjuhfvvs\STM32CubeIDE_1.2.0\STM32CubeIDE\jre\lib\jsse.jar"/>
+<entry path="M:\ghjuhfvvs\STM32CubeIDE_1.2.0\STM32CubeIDE\jre\lib\jce.jar"/>
+<entry path="M:\ghjuhfvvs\STM32CubeIDE_1.2.0\STM32CubeIDE\jre\lib\charsets.jar"/>
+<entry path="M:\ghjuhfvvs\STM32CubeIDE_1.2.0\STM32CubeIDE\jre\lib\jfr.jar"/>
+<entry path="M:\ghjuhfvvs\STM32CubeIDE_1.2.0\STM32CubeIDE\jre\classes"/>
+</bootpath>
+<extensionDirs>
+<entry path="M:\ghjuhfvvs\STM32CubeIDE_1.2.0\STM32CubeIDE\jre\lib\ext"/>
+<entry path="C:\WINDOWS\Sun\Java\lib\ext"/>
+</extensionDirs>
+<endorsedDirs>
+<entry path="M:\ghjuhfvvs\STM32CubeIDE_1.2.0\STM32CubeIDE\jre\lib\endorsed"/>
+</endorsedDirs>
+</libraryInfo>
+</libraryInfos>
