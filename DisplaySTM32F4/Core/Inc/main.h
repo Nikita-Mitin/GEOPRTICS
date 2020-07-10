@@ -54,7 +54,7 @@ extern "C" {
 #define string_pack_amount 	36					// макс_количество_строк_в_1-ом_пакете
 
 #define start_serv_string	155					// начало_служебных_строк
-#define start_ctrl_string	149					// начало_строк_контроля
+#define start_ctrl_string	140					// начало_строк_контроля
 
 #define degree_sym_amount	4					// максимальное_количество_знаков_градуса_в_строке
 #define UartBufSize 		4096				// размер_буфера_UART
@@ -66,10 +66,11 @@ extern "C" {
 #define scroll_speed		15					// скорость_пролистывания_строк_при_долгом_нажатии (строк_в_секунду)
 #define scroll_delay		600					// время_удержания_кнопки_до_начала_пролистывания (мс)
 #define OFF_delay			3000				// время_удержания_кнопки_выключения_до_запуска_отключения (мс)
-#define PowerOFF_delay		600000				// задержка_после_начала_выключения
+#define PowerOFF_delay		30000				// задержка_после_начала_выключения
 #define start_pause			600					// задержка_перед_стартом_дисплея (длительность_стартового_мигания)
 #define Button_Zummer		10					// задержка_на_писк_зумера_при_нажатии_кнопки
-#define mother_wdgtime		600000				// время_ожидания_от_материнки_данных. Если_данные_не_поступают_за_это_время_производится_перезапуск_материнки
+#define mother_wdgtime		600				// время_ожидания_от_материнки_данных. Если_данные_не_поступают_за_это_время_производится_перезапуск_материнки
+
 
 #define service_but_delay	3000				// время_удержания_сервисной_комбинации_кнопок
 
@@ -91,7 +92,9 @@ extern "C" {
 #define ctrl_string_3		start_ctrl_string + 2					// 3-я_строка_контроля
 #define ctrl_string_4		start_ctrl_string + 3					// 4-я_строка_контроля
 #define ctrl_string_5		start_ctrl_string + 4					// 5-я_строка_контроля
-#define ctrl_string_6		start_ctrl_string + 5					// 5-я_строка_контроля
+#define ctrl_string_6		start_ctrl_string + 5					// 6-я_строка_контроля
+#define ctrl_string_7		start_ctrl_string + 6					// 7-я_строка_контроля
+#define ctrl_string_8		start_ctrl_string + 7					// 7-я_строка_контроля
 
 /*----------------------- ДАТЧ�?К ТЕМПЕРАТУРЫ STM32 ---------------------------*/
 #define TEMP110_CAL_ADDR 	((uint16_t*) ((uint32_t) 0x1FFF7A2E))	// адрес_калиброваного_значения_при_T = 110
@@ -118,6 +121,7 @@ extern IWDG_HandleTypeDef hiwdg;
 extern TIM_HandleTypeDef htim7;
 extern ADC_HandleTypeDef hadc1;
 extern I2C_HandleTypeDef hi2c1;
+extern TIM_HandleTypeDef htim14;
 
 			/*- - - - - - - - - -  UP_time - - - - - - - - - - */
 extern uint32_t uptime_tick;
@@ -136,6 +140,7 @@ typedef struct{
 	uint8_t number;									// номер_строки
 	uint8_t status;									// статус_строки (можно_ли_ее_выводить)
 	uint8_t degreeSym[degree_sym_amount];			// массив_хранящий_положение_в_строке_знаков_градуса (до degree_sym_amount)
+	uint8_t chanel_num;								// номер_канала_которому_строка_принадлежит
 }string_t;
 
 /*
@@ -211,6 +216,9 @@ void PowerOFF();
 void FlashWriteStart(); //!
 void PowerON(u8g2_t *);
 void SleepMode();
+void ADC_Read12vHandler();
+uint16_t ADC_Mean(uint16_t* ADC_arr, uint8_t len);
+uint16_t ADC_to_Volt(uint16_t adc_val);
 
 /*----------------------------- ФУНКЦ�?�? РАСЧЕТА ------------------------------*/
 uint8_t TemperatureGetData(uint16_t);
@@ -219,6 +227,7 @@ uint8_t TemperatureGetData(uint16_t);
 void PowerButtonHandler(uint32_t *,uint8_t *,uint8_t *, uint16_t); //!
 void ScrollingButtonHandler(uint8_t *, uint32_t*, uint8_t*);
 void ServiceModeButtonHandler(uint8_t *, uint8_t *, uint32_t *, uint16_t);
+void ConnHandler(uint8_t *mem1, uint8_t *mem2);
 
 /*------------------------------ CRC32 ФУНКЦ�?�? -------------------------------*/
 void CRC32_Put(buffer_t*, uint8_t);
@@ -235,7 +244,8 @@ char BigLatter(char);
 /*-------------------- ФУНКЦ�?�? РАБОТЫ С СТРОКАМ�? string_t --------------------*/
 void PutERROR(string_t*,const char*);
 void LEDStringPars(string_t *datastring,RGB_status *leds);
-void ServiceStringPars(string_t *, ctrl_status *);\
+void ServiceStringPars(string_t *, ctrl_status *);
+void PutString(string_t *dtstring, const char* str, uint8_t *pointer);
 
 /*--------------------------------СВЕТОД�?ОДЫ-----------------------------------*/
 void LED_control(led_status *, uint16_t, uint16_t);
@@ -249,7 +259,7 @@ void UPTIME_IRQHandler();
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define High12vThreshold 1439
+#define High12vThreshold 1432
 #define Low12vThreshold 1372
 #define STM32_OUT_DOG_Pin GPIO_PIN_13
 #define STM32_OUT_DOG_GPIO_Port GPIOC
@@ -321,16 +331,16 @@ void UPTIME_IRQHandler();
 #define BLUE_422_GPIO_Port GPIOA
 #define STM32_R_24_NO_Pin GPIO_PIN_11
 #define STM32_R_24_NO_GPIO_Port GPIOA
-#define STM32_BUTTON_1_Pin GPIO_PIN_0
-#define STM32_BUTTON_1_GPIO_Port GPIOD
-#define STM32_BUTTON_2_Pin GPIO_PIN_1
+#define STM32_BUTTON_2_Pin GPIO_PIN_0
 #define STM32_BUTTON_2_GPIO_Port GPIOD
+#define STM32_BUTTON_1_Pin GPIO_PIN_1
+#define STM32_BUTTON_1_GPIO_Port GPIOD
 #define STM32_BUTTON_3_Pin GPIO_PIN_2
 #define STM32_BUTTON_3_GPIO_Port GPIOD
-#define STM32_BUTTON_LED_1_Pin GPIO_PIN_4
-#define STM32_BUTTON_LED_1_GPIO_Port GPIOD
-#define STM32_BUTTON_LED_2_Pin GPIO_PIN_5
+#define STM32_BUTTON_LED_2_Pin GPIO_PIN_4
 #define STM32_BUTTON_LED_2_GPIO_Port GPIOD
+#define STM32_BUTTON_LED_1_Pin GPIO_PIN_5
+#define STM32_BUTTON_LED_1_GPIO_Port GPIOD
 #define STM32_BUTTON_LED_3_Pin GPIO_PIN_6
 #define STM32_BUTTON_LED_3_GPIO_Port GPIOD
 #define STM32_OUT_REL_4_Pin GPIO_PIN_7

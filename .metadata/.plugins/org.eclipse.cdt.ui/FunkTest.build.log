@@ -1,4 +1,4 @@
-14:57:02 **** Incremental Build of configuration Debug for project FunkTest ****
+15:44:46 **** Incremental Build of configuration Debug for project FunkTest ****
 make all 
 arm-none-eabi-size   FunkTest.elf 
    text	   data	    bss	    dec	    hex	filename
@@ -8,5 +8,5 @@ Finished building: default.size.stdout
 arm-none-eabi-objcopy.exe -O ihex "FunkTest.elf" "FunkTest.hex"
  
 
-14:57:05 Build Finished. 0 errors, 0 warnings. (took 3s.64ms)
+15:44:49 Build Finished. 0 errors, 0 warnings. (took 2s.984ms)
 

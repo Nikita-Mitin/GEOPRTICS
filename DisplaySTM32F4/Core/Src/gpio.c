@@ -69,7 +69,7 @@ void MX_GPIO_Init(void)
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOD, STM32_BUTTON_LED_POWER_Pin|RED_485_Pin|STM32_ZUMMER_Pin|BLUE_232_Pin 
                           |STM32_Relay_mmn_Pin|GREEN_232_Pin|STM32_Relay_mother_Pin|RED_232_Pin 
-                          |STM32_BUTTON_LED_1_Pin|STM32_BUTTON_LED_2_Pin|STM32_BUTTON_LED_3_Pin|STM32_OUT_REL_4_Pin, GPIO_PIN_RESET);
+                          |STM32_BUTTON_LED_2_Pin|STM32_BUTTON_LED_1_Pin|STM32_BUTTON_LED_3_Pin|STM32_OUT_REL_4_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pins : PCPin PCPin PCPin PCPin */
   GPIO_InitStruct.Pin = STM32_OUT_DOG_Pin|STM32_RS_DC_DC_Pin|STM32_relay_swith_pin_Pin|STM32_relay_outside_Pin;
@@ -128,7 +128,7 @@ void MX_GPIO_Init(void)
                            PDPin PDPin PDPin PDPin */
   GPIO_InitStruct.Pin = STM32_BUTTON_LED_POWER_Pin|RED_485_Pin|STM32_ZUMMER_Pin|BLUE_232_Pin 
                           |STM32_Relay_mmn_Pin|GREEN_232_Pin|STM32_Relay_mother_Pin|RED_232_Pin 
-                          |STM32_BUTTON_LED_1_Pin|STM32_BUTTON_LED_2_Pin|STM32_BUTTON_LED_3_Pin|STM32_OUT_REL_4_Pin;
+                          |STM32_BUTTON_LED_2_Pin|STM32_BUTTON_LED_1_Pin|STM32_BUTTON_LED_3_Pin|STM32_OUT_REL_4_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_PULLDOWN;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
@@ -147,7 +147,7 @@ void MX_GPIO_Init(void)
   HAL_GPIO_Init(STM32_R_24_NO_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : PDPin PDPin PDPin */
-  GPIO_InitStruct.Pin = STM32_BUTTON_1_Pin|STM32_BUTTON_2_Pin|STM32_BUTTON_3_Pin;
+  GPIO_InitStruct.Pin = STM32_BUTTON_2_Pin|STM32_BUTTON_1_Pin|STM32_BUTTON_3_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);

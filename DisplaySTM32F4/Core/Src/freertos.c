@@ -68,7 +68,7 @@ uint8_t ADC_reset_count = 0;
 uint8_t display_stat = 1;					// Переменная_статуса_дисплея
 uint8_t LEDs_stat;							// Переменная_статуса_светодиодов
 
-uint8_t UTC[8] = {'\0'};
+uint8_t UTC[19] = {'\0'};
 uint8_t UTC_show_flag = 0;
 
 uint8_t service_mode = 0;
@@ -200,7 +200,20 @@ void StartDefaultTask(void const * argument)
 	HAL_UART_Receive_DMA(&huart3, (uint8_t*)uart_buf, UartBufSize);	// ЗАПУСК UART В РЕЖ�?МЕ DMA
 	HAL_IWDG_Init(&hiwdg);											// ЗАПУСК WATHDOG
 	HAL_TIM_Base_Start_IT(&htim7);									// ЗАПУСК ТАЙМЕРА UP_TIME
+//	HAL_TIM_Base_Start_IT(&htim14);									// ЗАПУСК ТАЙМЕРА UP_TIME
 	HAL_ADC_Start_DMA(&hadc1,(uint32_t*)&ADC_val, 5);				// ЗАПУСК АЦП В РЕЖ�?МЕ DMA
+
+	datastring[ctrl_string_1].number = ctrl_string_1;
+	datastring[ctrl_string_2].number = ctrl_string_2;
+	datastring[ctrl_string_3].number = ctrl_string_3;
+	datastring[ctrl_string_4].number = ctrl_string_4;
+	datastring[ctrl_string_5].number = ctrl_string_5;
+	datastring[ctrl_string_6].number = ctrl_string_6;
+	datastring[ctrl_string_7].number = ctrl_string_7;
+	datastring[ctrl_string_8].number = ctrl_string_8;
+
+	datastring[serv_string_1].number = serv_string_1;
+	datastring[serv_string_2].number = serv_string_2;
 
 	if(!HSE_status){
 		HAL_GPIO_WritePin(SYM_LED_B_GPIO_Port, SYM_LED_B_Pin, GPIO_PIN_SET);
@@ -242,11 +255,12 @@ void StartDisplayTask(void const * argument)
 	string_t *rdy[string_amount];								// Массив_указателей_на_готовые_к_выводу_строки
 //	uint8_t disp_stat = 1;										// Статус_дисплея. Определяется_приянтым_от_компа_значением
 	uint8_t show_pointer = 0;
-
+	uint8_t string_num[3] = {'\0'};
 /*----------------------------- СЧЕТЧ�?К�? ------------------------------- */
 	uint8_t rdy_count = 0;
 	uint8_t show_count = 0;
 	uint32_t displayOFF_del = 0;
+	uint8_t chanel_num[2] = {'\0'};
 
 /*----------------------- ФУНКЦ�?�? �?Н�?ЦАЛ�?ЗАЦ�?�? --------------------------*/
 	DisplayInit(&u8g2);											// �?Н�?Ц�?АЛ�?ЗАЦ�?Я Д�?СПЛЕЯ
@@ -258,7 +272,7 @@ void StartDisplayTask(void const * argument)
 		// УСЛОВ�?Е ОПРЕДЕЛЯЮЩЕЕ, ГОТОВЫ Л�? ДАННЫЕ ДЛЯ ВЫВОДА
 		// ЕСЛ�? НЕ ГОТОВЫ, ВЫВОД�?Т ОКНО ЗАГРУЗК�?,
 		// �?НАЧЕ ВЫПОЛНЯЕТ ВЫВОД ДАННЫХ НА Д�?СПЛЕЙ
-		if(!(data_ready_flag && uart_hlf_flag) && display_stat){
+		if(!(data_ready_flag && uart_hlf_flag) && display_stat && !service_mode){
 			display_stat = 3;
 		}
 		else if (display_stat){
@@ -270,7 +284,7 @@ void StartDisplayTask(void const * argument)
 			// ПРОСМАТР�?ЕВАЕМ ВЕСЬ МАСС�?В СТРОК В ПО�?СКАХ ГОТОВЫХ СТРОК
 			// ЕСЛ�? СТРОКА ГОТОВА, В МАСС�?В УКАЗАТЕЛЕЙ ЗАП�?СЫВАЕМ АДРЕСС ГОТОВОЙ СТРОК�?
 			rdy_count = 0;
-			for(uint8_t i = 1; i < start_ctrl_string; i++){
+			for(uint8_t i = 1; i < string_amount; i++){
 				if(datastring[i].status){
 					rdy[rdy_count] = &datastring[i];
 					rdy_count++;
@@ -304,7 +318,7 @@ void StartDisplayTask(void const * argument)
 
 			u8g2_SetFont(&u8g2, u8g2_font_unifont_t_cyrillic);				// УСТАНАВЛ�?ВАЕМ К�?Р�?Л�?ЧЕСК�?Й ШР�?ФТ
 
-			u8g2_SetDrawColor(&u8g2, 2);
+			u8g2_SetDrawColor(&u8g2, 1);
 
 			// ВВОД�?М В БУФЕР Д�?СПЛЕЯ 4 СТРОК�?, НАЧ�?НАЯ С НАЧАЛА ПОЛОЖЕН�?Я КУРСОРА
 //			for(uint8_t i = cursor; i < cursor + 4; i++){
@@ -323,23 +337,38 @@ void StartDisplayTask(void const * argument)
 
 			while(show_count){
 
-				u8g2_DrawUTF8(&u8g2, 0, 15+ 15 * (4 - show_count),(char *) rdy[show_pointer]->buf);
+				if(service_mode){
+					u8g2_DrawUTF8(&u8g2, 0, 15 + 15 * (4 - show_count), (char *) itoa(rdy[show_pointer]->number,(char*) &string_num, 10));
+				}
+
+				u8g2_DrawUTF8(&u8g2, service_mode * (9 * strlen((char*) &string_num) + 3), 15+ 15 * (4 - show_count),(char *) rdy[show_pointer]->buf);
 
 				// ВВОД�?М В БУФЕР Д�?СПЛЕЯ ЗНАК�? С�?МВОЛОВ ГРАДУСА СТРОК�? В МЕСТА, НА КОТОРЫХ ОН�? РАСПОЛОЖЕНЫ
 				for(uint8_t j = 0; j < degree_sym_amount; j++){
-					if(rdy[show_pointer]->degreeSym[j] != '\0')
-					DrawSym(&u8g2, rdy[show_pointer]->degreeSym[j] * 7 + 7, 15 + 15 * (4 - show_count), 176);
+					if(rdy[show_pointer]->degreeSym[j] != '\0'){
+						DrawSym(&u8g2, rdy[show_pointer]->degreeSym[j] * 7 + 7 + service_mode * (9 * strlen((char*) &string_num) + 3), 15 + 15 * (4 - show_count), 176);
+
+						u8g2_SetFont(&u8g2, u8g2_font_unifont_t_cyrillic);
+						u8g2_DrawUTF8(&u8g2, rdy[show_pointer]->degreeSym[j] * 7 + 17 + service_mode * (9 * strlen((char*) &string_num) + 3), 15 + 15 * (4 - show_count), "C");
+					}
 				}
+
 
 				show_pointer = (show_pointer <= rdy_count - 2) ? show_pointer + 1 : 0;
 				show_count--;
 			}
 
 			if(UTC_show_flag){
+
+				itoa(rdy[cursor]->chanel_num,(char *) &chanel_num, 10);
+
 				u8g2_SetFontMode(&u8g2, 1);
-				u8g2_DrawBox(&u8g2, 0, 0, 254, 15);
+				u8g2_DrawBox(&u8g2, 0, 0, 254, 18);
 				u8g2_SetDrawColor(&u8g2, 2);
-				u8g2_DrawUTF8(&u8g2, 0, 15,(char *) &UTC);
+				u8g2_DrawUTF8(&u8g2, 0, 15,"Канал");
+				u8g2_DrawUTF8(&u8g2, 0 + 48, 15, (char *) &chanel_num);
+				u8g2_DrawUTF8(&u8g2, 64, 15,"UTC");
+				u8g2_DrawUTF8(&u8g2, 64 + 30, 15,(char *) &UTC);
 			}
 		}
 //			// ОТПРАВЛЯЕМ БУФЕР БЕЗ РЕЖ�?МОВ (ДЛЯ ОТЛАДК�?)
@@ -382,7 +411,7 @@ void StartDisplayTask(void const * argument)
 			LoadWindow(&u8g2, logo_width, logo_height,(uint8_t *) &logo_bits);
 			u8g2_SendBuffer(&u8g2);
 		}
-
+		HAL_IWDG_Refresh(&hiwdg);
 		// ПЕРЕВОД�?М ЗАДАЧУ В РЕЖ�?М ОЖ�?ДАН�?Я (мс)
 		osDelay(10);
 	}
@@ -418,6 +447,13 @@ void StartDataTask(void const * argument)
 	uint32_t restart_val = 0;
 	uint8_t UTC_count = 0;
 	uint16_t UTC_pointer = 0;
+	uint16_t chanel_pointer = 0;
+	uint8_t chanel_val = 0;
+
+	uint8_t last_transmit_str_count = 0;
+	uint32_t last_transmit = 0;
+	uint8_t last_transmit_char[7] = {'\0'};
+	uint32_t mother_restart_last = 0;
 
 	osDelay(500);
 /***************************** ТЕЛО ЗАДАЧ�? *******************************/
@@ -443,6 +479,7 @@ void StartDataTask(void const * argument)
 				// ЕСЛ�? НАЙДЕНА СТАРТОВАЯ КОМБ�?НАЦ�?Я, ТО НАЧ�?НАЕМ ПАРС�?ТЬ
 				if(FindString((uint8_t *)&uart_buf, UartBufSize, &pointer,"PDS", 3)){
 
+					last_transmit = uptime_tick;
 
 					// ПРОПУСКАЕМ С�?МВОЛ ';'
 					PassSym((uint8_t *)&uart_buf, UartBufSize, &pointer, 1);
@@ -495,20 +532,31 @@ void StartDataTask(void const * argument)
 
 							if(FindString((uint8_t *)&uart_buf, UartBufSize, &UTC_pointer, "UTC", 3)){
 
+								PassSym((uint8_t *)&uart_buf, UartBufSize, &UTC_pointer, 1);
 								UTC_count = 0;
 
-								while(UTC_count < 8){
+								while(UTC_count < 19){
 									UTC[UTC_count] = uart_buf[UTC_pointer];
 									UTC_pointer++;
 									UTC_count++;
 								}
 							}
 
+							chanel_pointer = pointer;
+
+							if(FindString((uint8_t *)&uart_buf, UartBufSize, &chanel_pointer,"Канал", 6)){
+								PassSym((uint8_t *)&uart_buf, UartBufSize, &chanel_pointer, 5);
+								chanel_val = uart_buf[chanel_pointer] - 48;
+							}
 							// ЕСЛ�? НАЙДЕНА КОМБ�?НАЦ�?Я "*C" ВМЕСТО НЕЕ КЛАДЕМ В СТРОКУ ' '
 							// �? ЗАП�?СЫВАЕМ ПОЛОЖЕН�?Е ЗНАКА ГРАДУСА (string_count)
 							if(FindString((uint8_t *)&uart_buf,UartBufSize,&pointer,"*C",2)){
 								datastring[stringnum].buf[string_count] = (uint8_t)' ';
 								datastring[stringnum].degreeSym[celsium_count] = string_count;
+								string_count++;
+								datastring[stringnum].buf[string_count] = (uint8_t)' ';
+								string_count++;
+								datastring[stringnum].buf[string_count] = (uint8_t)' ';
 								string_count++;
 								celsium_count++;
 							}
@@ -519,6 +567,8 @@ void StartDataTask(void const * argument)
 							PassSym((uint8_t *)&uart_buf, UartBufSize, &pointer, 1);
 							string_count++;
 						}
+
+						datastring[stringnum].chanel_num = chanel_val;
 
 						// КОГДА СТРОКА УЖЕ ЗАПОЛНЕНА ДАННЫМ�?,
 						// ОЧ�?ЩАЕМ ОСТАВШ�?ЕСЯ ЭЛЕМЕНТЫ В БУФЕРЕ СТРОК�?
@@ -533,13 +583,36 @@ void StartDataTask(void const * argument)
 					// СТАВ�?М ФЛАГ ГОТОВНОСТ�? ДАННЫХ, ДЛЯ ВЫХОДА �?З ЗАГРУЗОЧНОГО ОКНА
 					// �? ВЫХОД�?М �?З ПАРСЕРА ПАКЕТА
 					data_ready_flag = 1;
+
+					for(uint16_t i = 0; i < UartBufSize; i++){
+						uart_buf[i] = '\0';
+					}
 					break;
 				}
 
 				// ЕСЛ�? PSD НЕ НАЙДЕН, ПРОПУСКАЕМ С�?МВОЛ ЗА С�?МВОЛОМ ПОКА БУФЕР НЕ КОНЧ�?ТСЯ
-				PassSym((uint8_t *)&uart_buf,UartBufSize,&pointer,1);
+				PassSym((uint8_t *)&uart_buf, UartBufSize, &pointer, 1);
 				counter--;
 			}
+
+			for(uint8_t i = 0; i < 7; i++){
+				last_transmit_char[i] = '\0';
+			}
+
+			itoa(uptime_tick - last_transmit, (char*)&last_transmit_char, 10);
+
+			for(uint8_t i = 0; i < string_size; i++){
+				datastring[ctrl_string_7].buf[i] = '\0';
+			}
+
+			last_transmit_str_count = 0;
+
+			PutString(&datastring[ctrl_string_7], "Last connection - ", &last_transmit_str_count);
+
+			last_transmit_str_count = 18;
+			PutString(&datastring[ctrl_string_7], (const char*) last_transmit_char, &last_transmit_str_count);
+
+
 			if(!counter){
 				// ВЫВОД�?М ОШ�?БКУ, ЧТО СТАРТОВАЯ КОМБ�?НАЦ�?Я НЕ БЫЛА НАЙДЕНА
 				PutERROR((string_t *)&datastring,"PACK_NOT_FOUND");
@@ -549,14 +622,20 @@ void StartDataTask(void const * argument)
 		// ЕСЛ�? ДАННЫЕ НЕ ОБНОВЛЯЮТСЯ КАКОЕ ТО ВРЕМЯ,
 		// ПЕРЕЗАПУСКАЕМ UART, ДЛЯ �?ЗБЕЖАН�?Я ВОЗМОЖНЫХ ОШ�?БОК
 		if(HAL_GetTick() - restart_val > restart_time){
+			for(uint16_t i = 0; i < UartBufSize; i++){
+				uart_buf[i] = '\0';
+			}
 			HAL_UART_DMAStop(&huart3);
 			HAL_UART_Receive_DMA(&huart3, (uint8_t*)uart_buf, UartBufSize);
 		}
 
-		if(HAL_GetTick() - restart_val > mother_wdgtime){
+		if(uptime_tick - last_transmit > mother_wdgtime && uptime_tick - mother_restart_last > mother_wdgtime){
 			HAL_GPIO_WritePin(STM32_Relay_mother_GPIO_Port, STM32_Relay_mother_Pin, GPIO_PIN_RESET);
-			osDelay(1000);
+			HAL_GPIO_WritePin(SYM_LED_G_GPIO_Port, SYM_LED_G_Pin, GPIO_PIN_SET);
+			osDelay(10000);
+			HAL_GPIO_WritePin(SYM_LED_G_GPIO_Port, SYM_LED_G_Pin, GPIO_PIN_RESET);
 			HAL_GPIO_WritePin(STM32_Relay_mother_GPIO_Port, STM32_Relay_mother_Pin, GPIO_PIN_SET);
+			mother_restart_last = uptime_tick;
 		}
 
 		// ОБНАВЛЯЕМ WATHDOG
@@ -624,9 +703,16 @@ void StartControlTask(void const * argument)
 	uint16_t sB_pointer = 0;									// УКАЗАТЕЛЬ БУФЕРА
 	uint8_t sB_counter = 0;										// СЧЕТЧ�?К БУФЕРА
 	uint32_t transmit_timer = 0;								// СОХРАНЯЕТ ВРЕМЯ ПОСЛЕДНЕЙ ОТПРАВК�?
+	uint32_t flash_transmit_timer = 0;								// СОХРАНЯЕТ ВРЕМЯ ПОСЛЕДНЕЙ ОТПРАВК�?
 
 /*--------------------------- ПЕРЕМЕННЫЕ АЦП ---------------------------*/
 	uint8_t ADC_char[4];										// БУФЕР ДЛЯ ПЕРЕВОДА ЗНАЧЕН�?Я АЦП В СТРОКУ
+	uint16_t ADC_statistics[5][5] = {'\0'};						// Статистика для усреднения
+	uint32_t ADC_stat_time = 0;
+	uint8_t ADC_summ_count = 0;
+	uint16_t ADC_mid = 0;
+	uint16_t ADC_real = 0;
+
 	char up_time_char[10];
 	uint8_t adc_count = 0;			 							// СЧЕТЧ�?К АЦП
 	uint8_t adc_str_count = 0;									// СЧЕТЧ�?К СТРОК АЦП
@@ -636,7 +722,8 @@ void StartControlTask(void const * argument)
 	uint8_t service_mem = 0;
 	uint8_t service_mem2 = 0;
 
-	uint8_t con_mem = 0;
+	uint8_t con1_mem = 0;
+	uint8_t con2_mem = 0;
 /*-------------------------- ФУНКЦ�?�? ЗАПУСКА ----------------------------*/
 //	HAL_ADC_Start_DMA(&hadc1,(uint32_t*)&ADC_val,5);			// ЗАПУСК АЦП В РЕЖ�?МЕ DMA
 
@@ -660,13 +747,21 @@ void StartControlTask(void const * argument)
 		// ОБРАБАТЫВАЕМ КНОПКУ ОТКЛЮЧЕН�?Я П�?ТАН�?Я
 		PowerButtonHandler(&power_butthold, &power_butmem, &switch_off, OFF_delay - 1000);
 
-//		ServiceModeButtonHandler(&service_mem, &service_mem2, &service_hold, service_but_delay);
+		ServiceModeButtonHandler(&service_mem, &service_mem2, &service_hold, service_but_delay);
 
-//		ConnHandler(&con_mem);
+		ConnHandler(&con1_mem,&con2_mem);
 
+		if(HAL_GetTick() - ADC_stat_time > 100){
+			for(uint8_t i = 0; i < 5; i++){
+				ADC_statistics[i][ADC_summ_count] = ADC_val[i];
+			}
+			ADC_summ_count++;
+			ADC_stat_time = HAL_GetTick();
+		}
 /*----------- ЗАП�?СЫВАЕМ СОСТОЯН�?Е КНОПОК В МАСС�?В СОСТОЯН�?Я -----------*/
-		if(butmem & STM32_BUTTON_2_Pin){
+		if(butmem & STM32_BUTTON_3_Pin){
 			flash_on = 1;
+			flash_transmit_timer = HAL_GetTick();
 			UTC_show_flag = 1;
 		}
 		else UTC_show_flag = 0;
@@ -696,229 +791,303 @@ void StartControlTask(void const * argument)
 				HAL_GPIO_WritePin(RELE_PORTS[i], RELE_PINS[i], GPIO_PIN_RESET);
 		}
 
+//		display_stat = active.DISP;
 		// СОСТОЯН�?Е Д�?СПЛЕЯ ОТПРАВЛЯЕТСЯ В ЗАДАЧУ StartDisplayTask
 //		xQueueSendToBack(myDispStatQueueHandle, &active.DISP, portMAX_DELAY);
 
+
+
+		if(HAL_GetTick() - transmit_timer > transmit_time){
 /*------------------------- СОСТАВЛЯЕМ СТРОК�? --------------------------*/
 
-		// ПРОБЕГАЕМ ВСЕ СТРОК�? КНОТРОЛЯ (Ц�?КЛ ТУТ Л�?ШН�?Й, НО ПУСТЬ ПОКА БУДЕТ)
-		for(uint8_t i = start_ctrl_string; i < start_serv_string; i++){
-			switch (i){
+			// ПРОБЕГАЕМ ВСЕ СТРОК�? КНОТРОЛЯ (Ц�?КЛ ТУТ Л�?ШН�?Й, НО ПУСТЬ ПОКА БУДЕТ)
+			for(uint8_t i = start_ctrl_string; i < start_serv_string; i++){
+				switch (i){
 
-		/*- - - - - - - -  Строка_№2_(РЕЛЕ/DC) - - - - - - - -*/
-			case ctrl_string_2:
+			/*- - - - - - - -  Строка_№2_(РЕЛЕ/DC) - - - - - - - -*/
+				case ctrl_string_2:
 
-				RB_count = 0;
+					datastring[i].number = i;
 
-				// ЗАПОЛНЯЕМ СТРОКУ, �?СПОЛЬЗУЯ ШАБЛОН
-				for(uint8_t j = 0; j < strlen((const char *)&ctrl_template);j++){
+					RB_count = 0;
 
-					// ЕСЛ�? С�?МВОЛ ШАБЛОНА 'R', ЗАП�?СЫВАЕМ СОСТОЯН�?Е РЕЛЕ(RB_COUNT ПО СЧЕТУ)
-					if(ctrl_template[j] == (uint8_t)'R'){
-						datastring[i].buf[j] = ctrl_template[j];
-						datastring[i].buf[j+1] = active.RELE[RB_count] + 48; 	// + 48 - ПЕРЕВОД�?Т С�?МВОЛ �?З INT В CHAR
-						RB_count++;
+					// ЗАПОЛНЯЕМ СТРОКУ, �?СПОЛЬЗУЯ ШАБЛОН
+					for(uint8_t j = 0; j < strlen((const char *)&ctrl_template);j++){
+
+						// ЕСЛ�? С�?МВОЛ ШАБЛОНА 'R', ЗАП�?СЫВАЕМ СОСТОЯН�?Е РЕЛЕ(RB_COUNT ПО СЧЕТУ)
+						if(ctrl_template[j] == (uint8_t)'R'){
+							datastring[i].buf[j] = ctrl_template[j];
+							datastring[i].buf[j+1] = active.RELE[RB_count] + 48; 	// + 48 - ПЕРЕВОД�?Т С�?МВОЛ �?З INT В CHAR
+							RB_count++;
+						}
+
+						// ЕСЛ�? НАХОД�?М КОМБ�?НАЦ�?Ю "DC", ЗАП�?СЫВАЕМ СОСТОЯН�?Е DC
+						if(ctrl_template[j] == (uint8_t)'D' && ctrl_template[j+1] == (uint8_t)'C'){
+							datastring[i].buf[j] = ctrl_template[j];
+							datastring[i].buf[j+1] = ctrl_template[j+1];
+							datastring[i].buf[j+2] = active.DC + 48;				// + 48 - ПЕРЕВОД�?Т С�?МВОЛ �?З INT В CHAR
+						}
 					}
+					break;
 
-					// ЕСЛ�? НАХОД�?М КОМБ�?НАЦ�?Ю "DC", ЗАП�?СЫВАЕМ СОСТОЯН�?Е DC
-					if(ctrl_template[j] == (uint8_t)'D' && ctrl_template[j+1] == (uint8_t)'C'){
-						datastring[i].buf[j] = ctrl_template[j];
-						datastring[i].buf[j+1] = ctrl_template[j+1];
-						datastring[i].buf[j+2] = active.DC + 48;				// + 48 - ПЕРЕВОД�?Т С�?МВОЛ �?З INT В CHAR
+			/*- - - - - - - - -  Строка_№3_(КНОПК�?) - - - - - - - -*/
+				case ctrl_string_3:
+					datastring[i].number = i;
+					RB_count = 0;
+
+					// ЗАПОЛНЯЕМ СТРОКУ, �?СПОЛЬЗУЯ ШАБЛОН
+					for(uint8_t j = 0; j < strlen((const char *)&but_template);j++){
+
+						// ЕСЛ�? С�?МВОЛ ШАБЛОНА 'B', ЗАП�?СЫВАЕМ СОСТОЯН�?Е КНОПКО ПРОКУРУТК�? �? ФЛЭШ
+						if(but_template[j] == (uint8_t)'B'){
+							datastring[i].buf[j] = but_template[j];
+							datastring[i].buf[j+1] = but_buf[RB_count] + 48;		// + 48 - ПЕРЕВОД�?Т С�?МВОЛ �?З INT В CHAR
+							RB_count++;
+						}
+						// ЕСЛ�? НАХОД�?М КОМБ�?НАЦ�?Ю "PB", ЗАП�?СЫВАЕМ СОСТОЯН�?Е КНОПК�? ВЫКЛЮЧЕН�?Я
+						if(but_template[j] == (uint8_t)'P' && but_template[j+1] == (uint8_t)'B'){
+							datastring[i].buf[j] = but_template[j];
+							datastring[i].buf[j+1] = but_template[j+1];
+							datastring[i].buf[j+2] = but_buf[3] + 48;		// + 48 - ПЕРЕВОД�?Т С�?МВОЛ �?З INT В CHAR
+	//						RB_count++;
+						}
 					}
-				}
-				break;
+					break;
 
-		/*- - - - - - - - -  Строка_№3_(КНОПК�?) - - - - - - - -*/
-			case ctrl_string_3:
-
-				RB_count = 0;
-
-				// ЗАПОЛНЯЕМ СТРОКУ, �?СПОЛЬЗУЯ ШАБЛОН
-				for(uint8_t j = 0; j < strlen((const char *)&but_template);j++){
-
-					// ЕСЛ�? С�?МВОЛ ШАБЛОНА 'B', ЗАП�?СЫВАЕМ СОСТОЯН�?Е КНОПКО ПРОКУРУТК�? �? ФЛЭШ
-					if(but_template[j] == (uint8_t)'B'){
-						datastring[i].buf[j] = but_template[j];
-						datastring[i].buf[j+1] = but_buf[RB_count] + 48;		// + 48 - ПЕРЕВОД�?Т С�?МВОЛ �?З INT В CHAR
-						RB_count++;
-					}
-					// ЕСЛ�? НАХОД�?М КОМБ�?НАЦ�?Ю "PB", ЗАП�?СЫВАЕМ СОСТОЯН�?Е КНОПК�? ВЫКЛЮЧЕН�?Я
-					if(but_template[j] == (uint8_t)'P' && but_template[j+1] == (uint8_t)'B'){
-						datastring[i].buf[j] = but_template[j];
-						datastring[i].buf[j+1] = but_template[j+1];
-						datastring[i].buf[j+2] = but_buf[3] + 48;		// + 48 - ПЕРЕВОД�?Т С�?МВОЛ �?З INT В CHAR
-//						RB_count++;
-					}
-				}
-				break;
-
-		/*- - - - - - - - Строка_№4_(ТЕМПЕРАТУРА) - - - - - - -*/
-			case ctrl_string_4:
-
-				// СТАТУС СТРОК�? = 1 - (ТОЛЬКО ДЛЯ ОТЛАДК�?)
-				datastring[i].status = 1;
-				adc_count = 0;
-				adc_str_count = 0;
-
-				// СЧ�?ТЫВАЕМ ПОКА ЧТО ДВА КАНАЛА АЦП
-				while(adc_count < 5){
-
-					// ЗАП�?СЫВАЕМ ЗНАК ТЕМПЕРАТУРЫ
-					datastring[i].buf[adc_str_count] = (uint8_t)'T';
-
-					adc_str_count++;
-
-					// ЕСЛ�? ОПРАШ�?ВАЕМ ДАТЧ�?К ТЕМПЕРАТУРЫ STM, СЧ�?ТАЕМ ЕГО ПО СПЕЦ�?АЛЬНОЙ
-					// �? ПЕРЕВОД�?М В СТРОКУ
-					// �?НАЧЕ ПРОСТО ВЫВОД�?М ЗНАЧЕН�?Е ТЕМПЕРАТУРЫ
-					if(!adc_count){
-						itoa(TemperatureGetData(ADC_val[0]),(char *)&ADC_char,10);
-					}
-					else itoa(ADC_val[adc_count],(char *)&ADC_char,10);
-
-					// ЗАП�?СЫВАЕМ СТРОКУ ЗНАЧЕН�?Я АЦП/ТЕМПЕРАТУРЫ В СТРОКУ
-					for(uint8_t j = 0; j < strlen((const char*)&ADC_char); j++){
-						datastring[i].buf[adc_str_count] = ADC_char[j];
-						adc_str_count++;
-					}
-					adc_count++;
-				}
-				break;
-
-			/*- - - - - - - - - Строка_№5_(ОПТОПАРЫ) - - - - - - - -*/
-				case ctrl_string_5:
-
+			/*- - - - - - - - Строка_№4_(ТЕМПЕРАТУРА) - - - - - - -*/
+				case ctrl_string_4:
+					datastring[i].number = i;
 					adc_count = 0;
 					adc_str_count = 0;
 
-					while(adc_str_count < 6){
-						datastring[i].buf[adc_count] = (uint8_t)'O';
+					// СЧ�?ТЫВАЕМ ПОКА ЧТО ДВА КАНАЛА АЦП
+					while(adc_count < 5){
+
+						// ЗАП�?СЫВАЕМ ЗНАК ТЕМПЕРАТУРЫ
+
+						// ЕСЛ�? ОПРАШ�?ВАЕМ ДАТЧ�?К ТЕМПЕРАТУРЫ STM, СЧ�?ТАЕМ ЕГО ПО СПЕЦ�?АЛЬНОЙ
+						// �? ПЕРЕВОД�?М В СТРОКУ
+						// �?НАЧЕ ПРОСТО ВЫВОД�?М ЗНАЧЕН�?Е ТЕМПЕРАТУРЫ
+						switch (adc_count){
+						case 0:
+							datastring[i].buf[adc_str_count] = (uint8_t)'T';
+							adc_str_count++;
+
+							ADC_mid = ADC_Mean(ADC_statistics[0], 5);
+							itoa(TemperatureGetData(ADC_mid),(char *)&ADC_char, 10);
+							break;
+
+						case 1:
+							datastring[i].buf[adc_str_count] = (uint8_t)'T';
+							adc_str_count++;
+
+							ADC_mid = ADC_Mean(ADC_statistics[adc_count], 5);
+
+							itoa(ADC_to_Volt(ADC_mid),(char *)&ADC_char, 10);
+							break;
+
+						case 2:
+							datastring[i].buf[adc_str_count] = (uint8_t)'U';
+							adc_str_count++;
+
+							ADC_mid = ADC_Mean(ADC_statistics[adc_count], 5);
+							ADC_real = ADC_to_Volt(ADC_mid) * 2;
+							itoa(ADC_real,(char *)&ADC_char, 10);
+							break;
+
+						case 3:
+							datastring[i].buf[adc_str_count] = (uint8_t)'U';
+							adc_str_count++;
+
+							ADC_mid = ADC_Mean(ADC_statistics[adc_count], 5);
+							ADC_real = ADC_to_Volt(ADC_mid) * 2;
+							itoa(ADC_real,(char *)&ADC_char, 10);
+							break;
+
+						case 4:
+							datastring[i].buf[adc_str_count] = (uint8_t)'U';
+							adc_str_count++;
+
+							ADC_mid = ADC_Mean(ADC_statistics[adc_count], 5);
+							ADC_real = ADC_to_Volt(ADC_mid) * 11;
+							itoa(ADC_real,(char *)&ADC_char, 10);
+							break;
+						}
+
+
+						// ЗАП�?СЫВАЕМ СТРОКУ ЗНАЧЕН�?Я АЦП/ТЕМПЕРАТУРЫ В СТРОКУ
+						for(uint8_t j = 0; j < strlen((const char*)&ADC_char); j++){
+							datastring[i].buf[adc_str_count] = ADC_char[j];
+							adc_str_count++;
+						}
 						adc_count++;
-						datastring[i].buf[adc_count] = opt_buf[adc_str_count] + 48;
-						adc_count++;
-						adc_str_count++;
 					}
 					break;
-			/*- - - - - - - - - Строка_№6_(UP_time) - - - - - - - -*/
-				case ctrl_string_6:
-					adc_count = 0;
-					datastring[i].buf[adc_count] = (uint8_t)'U';
-					adc_count++;
-					datastring[i].buf[adc_count] = (uint8_t)'P';
-					adc_count++;
-					datastring[i].buf[adc_count] = (uint8_t)'T';
-					adc_count++;
 
-					itoa(uptime_tick,up_time_char,10);
+				/*- - - - - - - - - Строка_№5_(ОПТОПАРЫ) - - - - - - - -*/
+					case ctrl_string_5:
+						datastring[i].number = i;
+						adc_count = 0;
+						adc_str_count = 0;
 
-					for(uint8_t j = 0; j < strlen(up_time_char); j++){
-						datastring[i].buf[adc_count] = up_time_char[j];
+						while(adc_str_count < 6){
+							datastring[i].buf[adc_count] = (uint8_t)'O';
+							adc_count++;
+							datastring[i].buf[adc_count] = opt_buf[adc_str_count] + 48;
+							adc_count++;
+							adc_str_count++;
+						}
+						break;
+				/*- - - - - - - - - Строка_№6_(UP_time) - - - - - - - -*/
+					case ctrl_string_6:
+
+						adc_count = 0;
+						datastring[i].buf[adc_count] = (uint8_t)'U';
 						adc_count++;
-					}
+						datastring[i].buf[adc_count] = (uint8_t)'P';
+						adc_count++;
+						datastring[i].buf[adc_count] = (uint8_t)'T';
+						adc_count++;
+
+						itoa(uptime_tick,up_time_char,10);
+
+						for(uint8_t j = 0; j < strlen(up_time_char); j++){
+							datastring[i].buf[adc_count] = up_time_char[j];
+							adc_count++;
+						}
+						break;
+					/*- - - - - - - - - Строка_№8_(ADC) - - - - - - - -*/
+					case ctrl_string_8:
+
+						adc_count = 0;
+						adc_str_count = 0;
+
+						while(adc_count < 5){
+							datastring[i].buf[adc_str_count] = 'A';
+							adc_str_count++;
+
+							ADC_mid = ADC_Mean(ADC_statistics[adc_count], 5);
+
+							itoa(ADC_mid,(char *)&ADC_char, 10);
+
+							// ЗАП�?СЫВАЕМ СТРОКУ ЗНАЧЕН�?Я АЦП/ТЕМПЕРАТУРЫ В СТРОКУ
+							for(uint8_t j = 0; j < strlen((const char*)&ADC_char); j++){
+								datastring[i].buf[adc_str_count] = ADC_char[j];
+								adc_str_count++;
+							}
+
+							adc_count++;
+						}
+						break;
+						// ЗАП�?СЫВАЕМ СТРОКУ ЗНАЧЕН�?Я АЦП В СТРОКУ
+				}
 			}
-		}
 
-/*-------------------- СОБ�?РАЕМ МАСС�?В ДЛЯ ОТПРАВК�? ----------------------*/
-		sB_pointer = 0;
+	/*-------------------- СОБ�?РАЕМ МАСС�?В ДЛЯ ОТПРАВК�? ----------------------*/
 
-		// ВНАЧАЛЕ БЛОК КОДА ПЕРЕД Ц�?КЛОМ ЗАП�?СЫВАЕТ СТАРОТОВУЮ КОМБ�?НАЦ�?Ю В ОТПРАВЛЯЕМЫЙ БУФЕР
-		sendBuf[sB_pointer] = 'P';
-		sB_pointer++;
-		sendBuf[sB_pointer] = 'S';
-		sB_pointer++;
-		sendBuf[sB_pointer] = 'D';
-		sB_pointer++;
-		sendBuf[sB_pointer] = ';';
-		sB_pointer++;
+			for(uint32_t i = 0; i < ctrl_string_amnt*string_size; i++){
+				sendBuf[i] = '\0';
+			}
 
-		crc_count = 0;
+			sB_pointer = 0;
 
-		// Ц�?КЛЫ ЗАП�?СЫВАЕТ КАЖДУЮ СТРОКУ КОНТРОЛЯ В МАСС�?В �? ПР�?СВАЕВАЕТ СТРОКЕ НОВЫЙ НОМЕР
-		for(uint8_t i = start_ctrl_string; i < start_serv_string; i++){
-			sB_counter = 0;
-
-			// ЗАП�?СЫВАЕМ НОМЕР, Т.К СОСТО�?Т �?З 2-Х Ц�?ФР, А В МОЕМ СЛУЧАЕ
-			// �?СПОЛЬЗУЮТСЯ ОДНОЗНАЧНЫЕ Ч�?СЛА, ЗАП�?СЫВАЕМ ПЕРВЫМ 0
-			sendBuf[sB_pointer] = '0';
-
-			// ЭТОТ СЧЕТЧ�?К ОТСЧ�?ТЫВАЕТ КОЛ�?ЧЕСТВО С�?МВОЛОВ ДЛЯ РАСЧЕТА CRC
-			crc_count++;
-
-
+			// ВНАЧАЛЕ БЛОК КОДА ПЕРЕД Ц�?КЛОМ ЗАП�?СЫВАЕТ СТАРОТОВУЮ КОМБ�?НАЦ�?Ю В ОТПРАВЛЯЕМЫЙ БУФЕР
+			sendBuf[sB_pointer] = 'P';
 			sB_pointer++;
-
-			// ЗАП�?СЫВАЕМ НОМЕР СТРОК�?, НАЧ�?НАЕТСЯ С 1 �? ДО 4
-			sendBuf[sB_pointer] = (i - start_ctrl_string + 1) + 48; 		// + 48 - ПЕРЕВОД�?Т �?З INT В CHAR
-			crc_count++;
+			sendBuf[sB_pointer] = 'S';
 			sB_pointer++;
-
-			// ПОСЛЕ НОМЕРА СТРОК�? ЗАП�?ШЕМ ';'
+			sendBuf[sB_pointer] = 'D';
+			sB_pointer++;
 			sendBuf[sB_pointer] = ';';
-			crc_count++;
 			sB_pointer++;
 
-			// В ДАННОМ Ц�?КЛЕ ЗАП�?СЫВАЕТСЯ СОДЕРЖ�?МОЕ СТРОК�?, ПОКА СТРОКА НЕ ЗАКОНЧ�?ТСЯ
-			while(datastring[i].buf[sB_counter] != '\0'){
-				sendBuf[sB_pointer] = datastring[i].buf[sB_counter];
+			crc_count = 0;
+
+			// Ц�?КЛЫ ЗАП�?СЫВАЕТ КАЖДУЮ СТРОКУ КОНТРОЛЯ В МАСС�?В �? ПР�?СВАЕВАЕТ СТРОКЕ НОВЫЙ НОМЕР
+			for(uint8_t i = start_ctrl_string; i < start_serv_string; i++){
+				sB_counter = 0;
+
+				// ЗАП�?СЫВАЕМ НОМЕР, Т.К СОСТО�?Т �?З 2-Х Ц�?ФР, А В МОЕМ СЛУЧАЕ
+				// �?СПОЛЬЗУЮТСЯ ОДНОЗНАЧНЫЕ Ч�?СЛА, ЗАП�?СЫВАЕМ ПЕРВЫМ 0
+				sendBuf[sB_pointer] = '0';
+
+				// ЭТОТ СЧЕТЧ�?К ОТСЧ�?ТЫВАЕТ КОЛ�?ЧЕСТВО С�?МВОЛОВ ДЛЯ РАСЧЕТА CRC
 				crc_count++;
-				sB_counter++;
+
+
+				sB_pointer++;
+
+				// ЗАП�?СЫВАЕМ НОМЕР СТРОК�?, НАЧ�?НАЕТСЯ С 1 �? ДО 4
+				sendBuf[sB_pointer] = (i - start_ctrl_string + 1) + 48; 		// + 48 - ПЕРЕВОД�?Т �?З INT В CHAR
+				crc_count++;
+				sB_pointer++;
+
+				// ПОСЛЕ НОМЕРА СТРОК�? ЗАП�?ШЕМ ';'
+				sendBuf[sB_pointer] = ';';
+				crc_count++;
+				sB_pointer++;
+
+				// В ДАННОМ Ц�?КЛЕ ЗАП�?СЫВАЕТСЯ СОДЕРЖ�?МОЕ СТРОК�?, ПОКА СТРОКА НЕ ЗАКОНЧ�?ТСЯ
+				while(datastring[i].buf[sB_counter] != '\0'){
+					sendBuf[sB_pointer] = datastring[i].buf[sB_counter];
+					crc_count++;
+					sB_counter++;
+					sB_pointer++;
+				}
+
+				// ОТДЕЛЯЕМ СТРКОУ ЗНАКОМ ';'
+				sendBuf[sB_pointer] = ';';
+				crc_count++;
 				sB_pointer++;
 			}
 
-			// ОТДЕЛЯЕМ СТРКОУ ЗНАКОМ ';'
+			// КОГДА ВСЕ СТРОК�? ПЕРЕП�?САНЫ, ПОСЛЕ Н�?Х ЗАП�?СЫВАЕМ СТРОКУ "CRC"
+			sendBuf[sB_pointer] = 'C';
+			sB_pointer++;
+			sendBuf[sB_pointer] = 'R';
+			sB_pointer++;
+			sendBuf[sB_pointer] = 'C';
+			sB_pointer++;
 			sendBuf[sB_pointer] = ';';
-			crc_count++;
 			sB_pointer++;
-		}
 
-		// КОГДА ВСЕ СТРОК�? ПЕРЕП�?САНЫ, ПОСЛЕ Н�?Х ЗАП�?СЫВАЕМ СТРОКУ "CRC"
-		sendBuf[sB_pointer] = 'C';
-		sB_pointer++;
-		sendBuf[sB_pointer] = 'R';
-		sB_pointer++;
-		sendBuf[sB_pointer] = 'C';
-		sB_pointer++;
-		sendBuf[sB_pointer] = ';';
-		sB_pointer++;
+			// РАСЧ�?ТЫВАЕМ CRC32
+			// *примечание_ДЛЯ РАСЧЕТА CRC32 В ДАННОМ СЛУЧАЕ НЕ �?СПОЛЬЗУЕТСЯ ОТДЕЛЬНЫЙ БУФЕР
+			// 	ДАННЫЕ БЕРУТСЯ �?З ОТПРАВЛЯЕМОГО БУФЕРА, НО НЕ СНАЧАЛА, А ПРОПУСКАЯ 4 С�?МВОЛА "PSD;"
+			//	�? ЗАКАНЧ�?ВАЯ ДО "СRC", Т.К �?СПОЛЬЗУЕТСЯ СЧЕТЧ�?К С�?МВОЛОВ crc_count
+			crc32 = Crc32((const unsigned char *) &sendBuf + 4, crc_count);
 
-		// РАСЧ�?ТЫВАЕМ CRC32
-		// *примечание_ДЛЯ РАСЧЕТА CRC32 В ДАННОМ СЛУЧАЕ НЕ �?СПОЛЬЗУЕТСЯ ОТДЕЛЬНЫЙ БУФЕР
-		// 	ДАННЫЕ БЕРУТСЯ �?З ОТПРАВЛЯЕМОГО БУФЕРА, НО НЕ СНАЧАЛА, А ПРОПУСКАЯ 4 С�?МВОЛА "PSD;"
-		//	�? ЗАКАНЧ�?ВАЯ ДО "СRC", Т.К �?СПОЛЬЗУЕТСЯ СЧЕТЧ�?К С�?МВОЛОВ crc_count
-		crc32 = Crc32((const unsigned char *) &sendBuf + 4, crc_count);
+			// ПЕРЕВОД�?М ЗНАЧЕН�?Е СRC32 В СТРОКУ (В HEX)
+			itoa(crc32, (char *) &crc_hex_buf, 16);
 
-		// ПЕРЕВОД�?М ЗНАЧЕН�?Е СRC32 В СТРОКУ (В HEX)
-		itoa(crc32, (char *) &crc_hex_buf, 16);
+			// ЗАП�?СЫВАЕМ ПОС�?МВОЛЬНО СТРОКОВОЕ ЗНАЧЕН�?Е CRC32
+			for(uint8_t i = 0; i < strlen((const char *) &crc_hex_buf); i++){
 
-		// ЗАП�?СЫВАЕМ ПОС�?МВОЛЬНО СТРОКОВОЕ ЗНАЧЕН�?Е CRC32
-		for(uint8_t i = 0; i < strlen((const char *) &crc_hex_buf); i++){
+				// Т.К itoa ПЕРЕВОД�?Т В HEX �?СПОЛЬЗУЯ МАЛЕНЬК�?Е БУКВЫ, МЕНЯЕМ �?Х НА БОЛЬШ�?Е. см_ФУНКУЮ BigLatter()
+				sendBuf[sB_pointer] = BigLatter(crc_hex_buf[i]);
+				sB_pointer++;
+			}
 
-			// Т.К itoa ПЕРЕВОД�?Т В HEX �?СПОЛЬЗУЯ МАЛЕНЬК�?Е БУКВЫ, МЕНЯЕМ �?Х НА БОЛЬШ�?Е. см_ФУНКУЮ BigLatter()
-			sendBuf[sB_pointer] = BigLatter(crc_hex_buf[i]);
+			// ЗАВЕРШАЕМ ПАКЕТ ';'
+			sendBuf[sB_pointer] = ';';
 			sB_pointer++;
-		}
 
-		// ЗАВЕРШАЕМ ПАКЕТ ';'
-		sendBuf[sB_pointer] = ';';
-		sB_pointer++;
+			// ОТПРАВЛЯЕМ ПАКЕТ
 
-		// ОТПРАВЛЯЕМ ПАКЕТ
-		if(HAL_GetTick() - transmit_timer > transmit_time){
 			transmit_timer = HAL_GetTick();
 			HAL_UART_Transmit(&huart3,(uint8_t *) &sendBuf, sB_pointer, 0xFFFF); // ОТПРАВЛЯЕМ МАСС�?В
+			ADC_summ_count = 0;
 		}
 
-		if(HAL_GetTick() - transmit_timer > transmit_time * 3){
+		if(HAL_GetTick() - flash_transmit_timer > transmit_time * 3){
 			flash_on = 0;
+
 		}
 
 /*------------ ОБРАБАТЫВАЕМ КНОПК�? ВЫКЛЮЧЕН�?Я �? ЗАП�?С�? FLASH --------------*/
-//		if(but_buf[3] && (HAL_GetTick() - power_butthold > OFF_delay)){
-//			PowerOFF(&active.DISP);												// КНОПКА ВЫКЛЮЧЕН�?Я
-//		}
-
-		if(but_buf[2]) FlashWriteStart();										// КНОПКА ФЛЭШ (ПОКА НЕ ГОТОВ)
+		if(but_buf[3] && (HAL_GetTick() - power_butthold > OFF_delay)){
+			PowerOFF(&active.DISP);												// КНОПКА ВЫКЛЮЧЕН�?Я
+		}
 
 		osDelay(50);
 	}
@@ -1015,6 +1184,19 @@ void UPTIME_IRQHandler(){
 	uptime_tick++;
 }
 
+uint16_t ADC_Mean(uint16_t* ADC_arr, uint8_t len){
+	uint16_t ADC_mean = 0;
+	for(uint8_t i = 0; i < len; i++){
+		ADC_mean += ADC_arr[i];
+	}
+
+	return ADC_mean/len;
+}
+
+uint16_t ADC_to_Volt(uint16_t adc_val){
+	return (adc_val*330)/4095;
+}
+
 void ADC_Read12vHandler(){
 	UBaseType_t uxSavedInterruptStatus;
 
@@ -1026,9 +1208,11 @@ void ADC_Read12vHandler(){
 
 	if(ADC_val[4] < Low12vThreshold || ADC_val[4] > High12vThreshold){
 		ADC_reset_count++;
+
 	}
 
 	if(ADC_reset_count > ADC_12v_reset_val){
+		HAL_GPIO_TogglePin(SYM_LED_G_GPIO_Port, SYM_LED_G_Pin);
 
 		HAL_GPIO_WritePin(STM32_Relay_mmn_GPIO_Port, STM32_Relay_mmn_Pin, GPIO_PIN_RESET);
 		HAL_GPIO_WritePin(STM32_Relay_mother_GPIO_Port, STM32_Relay_mother_Pin, GPIO_PIN_RESET);
@@ -1039,7 +1223,7 @@ void ADC_Read12vHandler(){
 		ADC_reset_count = 0;
 
 		while(ADC_reset_count < ADC_12v_reset_val){
-			if(ADC_val[4] < Low12vThreshold || ADC_val[4] > High12vThreshold){
+			if(ADC_val[4] > Low12vThreshold || ADC_val[4] < High12vThreshold){
 				ADC_reset_count++;
 			}
 		}
@@ -1103,6 +1287,8 @@ void HAL_ADC_LevelOutOfWindowCallback(ADC_HandleTypeDef* hadc){
 }
 
 void PowerON(u8g2_t* u8g2){
+
+//	uint32_t check12v = 0;
 //	UBaseType_t uxSavedInterruptStatus;
 
 	// ПРОВЕРЯЕМ УСЛОВ�?Е, ЧТО П�?ТАН�?Е 12 В
@@ -1112,15 +1298,25 @@ void PowerON(u8g2_t* u8g2){
 	// ПЕРЕВОД�?М В ЗНАЧЕН�?Е 12 РАЗРЯДНОГО АЦП		1.07142*4095/3.3 = 1329,545
 	// БЕРЕМ +-90 (+-0,8V НА ВХОД)
 	// Ц�?КЛ ЗАЩ�?ЩЕН ФУНКЦ�?ЯМ�? FREERTOS
+
+	// НА БУДУЩЕЕ
 //	uxSavedInterruptStatus = taskENTER_CRITICAL_FROM_ISR ();
-
-//	while(ADC_val[4] < 1240 || ADC_val[4] > 1420){
-//		HAL_GPIO_WritePin(STM32_ZUMMER_GPIO_Port, STM32_ZUMMER_Pin, GPIO_PIN_SET);
 //
-//		// ОБНОВЛЯЕМ WATHDOG
-//		HAL_IWDG_Refresh(&hiwdg);
+//	for(uint8_t i = 0; i < 10; i++){
+//		HAL_Delay(10);
+//
+//		check12v += ADC_val[4];
 //	}
-
+//
+//	if(check12v/10 > High12vThreshold || check12v/10 < Low12vThreshold){
+//			while(1){
+//				HAL_GPIO_TogglePin(SYM_LED_B_GPIO_Port, SYM_LED_B_Pin);
+//				HAL_Delay(100);
+//				HAL_IWDG_Refresh(&hiwdg);
+//				HAL_GPIO_WritePin(STM32_ZUMMER_GPIO_Port, STM32_ZUMMER_Pin, GPIO_PIN_SET);
+//			}
+//		}
+//
 //	taskEXIT_CRITICAL_FROM_ISR(uxSavedInterruptStatus);
 
 
@@ -1143,7 +1339,7 @@ void PowerON(u8g2_t* u8g2){
 	}
 
 	// ЗАЖ�?ГАЕМ Д�?СПЛЕЙ
-	u8g2_DrawBox(u8g2,0,0,254,64);
+	u8g2_DrawBox(u8g2, 0, 0, 254, 64);
 	u8g2_SendBuffer(u8g2);
 
 	// ЖДЕМ
@@ -1288,6 +1484,7 @@ uint8_t TemperatureGetData(uint16_t ADCResult){
  */
 void PutERROR(string_t *error_string, const char *error_tekst){
 
+	error_string[start_ctrl_string].number = start_ctrl_string;
 	// Ч�?СТ�?М СТРОКУ
 	for(uint8_t i = 0; i < string_size; i++){
 		error_string[start_ctrl_string].buf[i] = '\0';
@@ -1410,7 +1607,7 @@ void ServiceModeButtonHandler(uint8_t *mem, uint8_t *mem2, uint32_t *hold, uint1
 			&& HAL_GPIO_ReadPin(STM32_BUTTON_2_GPIO_Port, STM32_BUTTON_2_Pin)){
 
 		// ЕСЛ�? КНОПКА ДО ЭТОГО НЕ БЫЛА НАЖАТА
-		if(!(*mem & (STM32_BUTTON_1_Pin | STM32_BUTTON_2_Pin))){
+		if(!((*mem & STM32_BUTTON_1_Pin) && (*mem & STM32_BUTTON_2_Pin))){
 
 			// НАЧ�?НАЕТ ОТСЧЕТ ВРЕМЕН�?
 			*hold = HAL_GetTick();
@@ -1419,14 +1616,12 @@ void ServiceModeButtonHandler(uint8_t *mem, uint8_t *mem2, uint32_t *hold, uint1
 		if(((HAL_GetTick() - *hold) > service_delay) && *mem2 == 0){
 			*mem2 = 1;
 			HAL_GPIO_WritePin(STM32_ZUMMER_GPIO_Port, STM32_ZUMMER_Pin, GPIO_PIN_SET);
-			osDelay(20);
-			HAL_GPIO_WritePin(STM32_ZUMMER_GPIO_Port, STM32_ZUMMER_Pin, GPIO_PIN_RESET);
-			osDelay(30);
-			HAL_GPIO_WritePin(STM32_ZUMMER_GPIO_Port, STM32_ZUMMER_Pin, GPIO_PIN_SET);
-			osDelay(20);
+			osDelay(200);
 			HAL_GPIO_WritePin(STM32_ZUMMER_GPIO_Port, STM32_ZUMMER_Pin, GPIO_PIN_RESET);
 
 			service_mode = (service_mode == 0) ? 1 : 0;
+
+			datastring[0].status = service_mode;
 
 			datastring[serv_string_1].status = service_mode;
 			datastring[serv_string_2].status = service_mode;
@@ -1436,20 +1631,22 @@ void ServiceModeButtonHandler(uint8_t *mem, uint8_t *mem2, uint32_t *hold, uint1
 			datastring[ctrl_string_4].status = service_mode;
 			datastring[ctrl_string_5].status = service_mode;
 			datastring[ctrl_string_6].status = service_mode;
+			datastring[ctrl_string_7].status = service_mode;
+			datastring[ctrl_string_8].status = service_mode;
 		}
 	}
 	else{
 		*mem2 = 0;
 	}
 
-	*mem = STM32_BUTTON_LED_1_GPIO_Port->IDR;
+	*mem = STM32_BUTTON_LED_1_GPIO_Port->IDR; //ошибка
 }
 
-void ConnHandler(uint8_t *mem){
+void ConnHandler(uint8_t *mem1, uint8_t *mem2){
 
 	if(HAL_GPIO_ReadPin(STM32_Conn_1_GPIO_Port, STM32_Conn_1_Pin)){
 
-		if(!(*mem & STM32_Conn_1_Pin)){
+		if(!(*mem1)){
 			HAL_GPIO_WritePin(STM32_ZUMMER_GPIO_Port, STM32_ZUMMER_Pin, GPIO_PIN_SET);
 			osDelay(Button_Zummer);
 			HAL_GPIO_WritePin(STM32_ZUMMER_GPIO_Port, STM32_ZUMMER_Pin, GPIO_PIN_RESET);
@@ -1458,7 +1655,7 @@ void ConnHandler(uint8_t *mem){
 
 	if(!HAL_GPIO_ReadPin(STM32_Conn_1_GPIO_Port, STM32_Conn_1_Pin)){
 
-		if((*mem & STM32_Conn_1_Pin)){
+		if(*mem1){
 			HAL_GPIO_WritePin(STM32_ZUMMER_GPIO_Port, STM32_ZUMMER_Pin, GPIO_PIN_SET);
 			osDelay(Button_Zummer);
 			HAL_GPIO_WritePin(STM32_ZUMMER_GPIO_Port, STM32_ZUMMER_Pin, GPIO_PIN_RESET);
@@ -1469,7 +1666,7 @@ void ConnHandler(uint8_t *mem){
 
 	if(HAL_GPIO_ReadPin(STM32_Conn_2_GPIO_Port, STM32_Conn_2_Pin)){
 
-		if(!(*mem & STM32_Conn_2_Pin)){
+		if(!(*mem2)){
 			HAL_GPIO_WritePin(STM32_ZUMMER_GPIO_Port, STM32_ZUMMER_Pin, GPIO_PIN_SET);
 			osDelay(Button_Zummer);
 			HAL_GPIO_WritePin(STM32_ZUMMER_GPIO_Port, STM32_ZUMMER_Pin, GPIO_PIN_RESET);
@@ -1478,14 +1675,15 @@ void ConnHandler(uint8_t *mem){
 
 	if(!HAL_GPIO_ReadPin(STM32_Conn_2_GPIO_Port, STM32_Conn_2_Pin)){
 
-		if((*mem & STM32_Conn_2_Pin)){
+		if(*mem2){
 			HAL_GPIO_WritePin(STM32_ZUMMER_GPIO_Port, STM32_ZUMMER_Pin, GPIO_PIN_SET);
 			osDelay(Button_Zummer);
 			HAL_GPIO_WritePin(STM32_ZUMMER_GPIO_Port, STM32_ZUMMER_Pin, GPIO_PIN_RESET);
 		}
 	}
 
-	*mem = STM32_Conn_1_GPIO_Port->IDR;		// ПАМЯТЬ КНОПК�?
+	*mem1 = HAL_GPIO_ReadPin(STM32_Conn_1_GPIO_Port, STM32_Conn_1_Pin);		// ПАМЯТЬ КНОПК�?
+	*mem2 = HAL_GPIO_ReadPin(STM32_Conn_2_GPIO_Port, STM32_Conn_2_Pin);
 }
 
 /*
@@ -1539,7 +1737,8 @@ uint8_t CRC32_Status(uint8_t *buf, size_t buf_size, uint16_t pointer, buffer_t *
 				crc_in = HexToDec((char *)&crc_in_buf,8);
 
 				// ВЫВОЖУ СRC В 0-Ю СТРКОУ ДЛЯ ОТЛАДК�?
-				datastring[0].buf[crc_string_count] = buf[crc_pointer];
+//				datastring[ctrl_string_8].buf[crc_string_count] = buf[crc_pointer];
+//				datastring[ctrl_string_8].number = ctrl_string_8;
 
 				PassSym((uint8_t *)&buf, buf_size, &crc_pointer, 1);
 				crc_string_count++;
@@ -1633,6 +1832,14 @@ void LEDs_OFF(){
 	HAL_GPIO_WritePin(STM32_BUTTON_LED_1_GPIO_Port, STM32_BUTTON_LED_1_Pin, GPIO_PIN_RESET);
 	HAL_GPIO_WritePin(STM32_BUTTON_LED_2_GPIO_Port, STM32_BUTTON_LED_2_Pin, GPIO_PIN_RESET);
 	HAL_GPIO_WritePin(STM32_BUTTON_LED_3_GPIO_Port, STM32_BUTTON_LED_3_Pin, GPIO_PIN_RESET);
+}
+
+void PutString(string_t *dtstring, const char* str, uint8_t *pointer){
+	for(uint8_t i = 0; i < strlen(str); i++){
+		dtstring->buf[i + *pointer] = str[i];
+	}
+
+	*pointer += strlen(str);
 }
 
 /*

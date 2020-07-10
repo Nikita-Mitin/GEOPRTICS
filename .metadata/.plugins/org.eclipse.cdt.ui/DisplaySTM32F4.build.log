@@ -1,33 +1,10 @@
-16:38:15 **** Incremental Build of configuration Debug for project DisplaySTM32F4 ****
+14:12:06 **** Incremental Build of configuration Debug for project DisplaySTM32F4 ****
 make -j4 all 
-arm-none-eabi-gcc "../Core/Src/freertos.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DUSE_HAL_DRIVER -DDEBUG -DSTM32F407xx -c -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F -I../Drivers/CMSIS/Include -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Core/Inc -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I"M:/stm32/GEOPTICS/DisplaySTM32F4/Drivers/u8g2" -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/Src/freertos.d" -MT"Core/Src/freertos.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/freertos.o"
-../Core/Src/freertos.c: In function 'StartControlTask':
-../Core/Src/freertos.c:639:10: warning: unused variable 'con_mem' [-Wunused-variable]
-  uint8_t con_mem = 0;
-          ^~~~~~~
-../Core/Src/freertos.c:637:10: warning: unused variable 'service_mem2' [-Wunused-variable]
-  uint8_t service_mem2 = 0;
-          ^~~~~~~~~~~~
-../Core/Src/freertos.c:636:10: warning: unused variable 'service_mem' [-Wunused-variable]
-  uint8_t service_mem = 0;
-          ^~~~~~~~~~~
-../Core/Src/freertos.c:635:11: warning: unused variable 'service_hold' [-Wunused-variable]
-  uint32_t service_hold = 0;
-           ^~~~~~~~~~~~
-arm-none-eabi-gcc -o "DisplaySTM32F4.elf" @"objects.list"   -mcpu=cortex-m4 -T"M:\stm32\GEOPTICS\DisplaySTM32F4\STM32F407VGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="DisplaySTM32F4.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
-Finished building target: DisplaySTM32F4.elf
- 
-arm-none-eabi-objdump -h -S  DisplaySTM32F4.elf  > "DisplaySTM32F4.list"
-arm-none-eabi-objcopy  -O binary  DisplaySTM32F4.elf  "DisplaySTM32F4.bin"
 arm-none-eabi-size   DisplaySTM32F4.elf 
    text	   data	    bss	    dec	    hex	filename
-  76636	    132	  40316	 117084	  1c95c	DisplaySTM32F4.elf
+  85012	    132	  40492	 125636	  1eac4	DisplaySTM32F4.elf
 Finished building: default.size.stdout
  
-Finished building: DisplaySTM32F4.bin
- 
-Finished building: DisplaySTM32F4.list
- 
 
-16:38:21 Build Finished. 0 errors, 4 warnings. (took 6s.645ms)
+14:12:10 Build Finished. 0 errors, 0 warnings. (took 3s.817ms)
 
