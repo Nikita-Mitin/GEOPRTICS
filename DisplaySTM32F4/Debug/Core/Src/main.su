@@ -1,9 +1,9 @@
 main.c:77:5:main	8	static
-main.c:136:6:SystemClock_Config	88	static
-main.c:176:9:LoadWindow	40	static
-main.c:195:6:OFF_Window	24	static
-main.c:207:6:DrawSym	16	static
-main.c:214:9:u8x8_stm32_gpio_and_delay	24	static
-main.c:235:9:u8x8_byte_4wire_hw_spi	24	static,ignoring_inline_asm
-main.c:272:6:HAL_TIM_PeriodElapsedCallback	16	static
-main.c:289:6:Error_Handler	88	static
+main.c:137:6:SystemClock_Config	88	static
+main.c:177:9:LoadWindow	40	static
+main.c:196:6:OFF_Window	24	static
+main.c:208:6:DrawSym	16	static
+main.c:215:9:u8x8_stm32_gpio_and_delay	24	static
+main.c:236:9:u8x8_byte_4wire_hw_spi	24	static,ignoring_inline_asm
+main.c:273:6:HAL_TIM_PeriodElapsedCallback	16	static
+main.c:290:6:Error_Handler	88	static

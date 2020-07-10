@@ -45,8 +45,8 @@ extern "C" {
 
 /********************************* DEFINES ************************************/
 
-// ВЕРС�?Я ПО - �?ЮЛЬ 1.0
-#define VERS "�?ЮЛЬ 1.0"
+// ВЕРСИЯ ПО - ИЮЛЬ 2020 - мини
+#define VERS 				"ИЮЛЬ2020_мини"
 
 /*------------------------- НАСТРА�?ВАЕМЫЕ ЗНАЧЕН�?Я ---------------------------*/
 #define string_size 		60					// макс_количество_символов_в_строке
@@ -69,7 +69,7 @@ extern "C" {
 #define PowerOFF_delay		30000				// задержка_после_начала_выключения
 #define start_pause			600					// задержка_перед_стартом_дисплея (длительность_стартового_мигания)
 #define Button_Zummer		10					// задержка_на_писк_зумера_при_нажатии_кнопки
-#define mother_wdgtime		600				// время_ожидания_от_материнки_данных. Если_данные_не_поступают_за_это_время_производится_перезапуск_материнки
+#define mother_wdgtime		600					// время_ожидания_от_материнки_данных. Если_данные_не_поступают_за_это_время_производится_перезапуск_материнки
 
 
 #define service_but_delay	3000				// время_удержания_сервисной_комбинации_кнопок
@@ -95,6 +95,7 @@ extern "C" {
 #define ctrl_string_6		start_ctrl_string + 5					// 6-я_строка_контроля
 #define ctrl_string_7		start_ctrl_string + 6					// 7-я_строка_контроля
 #define ctrl_string_8		start_ctrl_string + 7					// 7-я_строка_контроля
+#define ctrl_string_9		start_ctrl_string + 8					// 7-я_строка_контроля
 
 /*----------------------- ДАТЧ�?К ТЕМПЕРАТУРЫ STM32 ---------------------------*/
 #define TEMP110_CAL_ADDR 	((uint16_t*) ((uint32_t) 0x1FFF7A2E))	// адрес_калиброваного_значения_при_T = 110
@@ -122,6 +123,7 @@ extern TIM_HandleTypeDef htim7;
 extern ADC_HandleTypeDef hadc1;
 extern I2C_HandleTypeDef hi2c1;
 extern TIM_HandleTypeDef htim14;
+extern TIM_HandleTypeDef htim13;
 
 			/*- - - - - - - - - -  UP_time - - - - - - - - - - */
 extern uint32_t uptime_tick;
@@ -253,7 +255,7 @@ void LEDs_OFF();
 
 /*------------------------- ОБРАБОТЧ�?К�? ПРЕРЫВАН�?Й ---------------------------*/
 void UPTIME_IRQHandler();
-
+void WDG_tim13_Handler();
 /******************************************************************************/
 
 /* USER CODE END EFP */

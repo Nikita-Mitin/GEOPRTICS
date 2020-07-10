@@ -68,6 +68,8 @@ uint8_t ADC_reset_count = 0;
 uint8_t display_stat = 1;					// Переменная_статуса_дисплея
 uint8_t LEDs_stat;							// Переменная_статуса_светодиодов
 
+uint8_t WDG_TackArr[4] = {0};
+
 uint8_t UTC[19] = {'\0'};
 uint8_t UTC_show_flag = 0;
 
@@ -201,6 +203,7 @@ void StartDefaultTask(void const * argument)
 	HAL_IWDG_Init(&hiwdg);											// ЗАПУСК WATHDOG
 	HAL_TIM_Base_Start_IT(&htim7);									// ЗАПУСК ТАЙМЕРА UP_TIME
 //	HAL_TIM_Base_Start_IT(&htim14);									// ЗАПУСК ТАЙМЕРА UP_TIME
+	HAL_TIM_Base_Start_IT(&htim13);									// ЗАПУСК ТАЙМЕРА WDG_TIME
 	HAL_ADC_Start_DMA(&hadc1,(uint32_t*)&ADC_val, 5);				// ЗАПУСК АЦП В РЕЖ�?МЕ DMA
 
 	datastring[ctrl_string_1].number = ctrl_string_1;
@@ -211,6 +214,9 @@ void StartDefaultTask(void const * argument)
 	datastring[ctrl_string_6].number = ctrl_string_6;
 	datastring[ctrl_string_7].number = ctrl_string_7;
 	datastring[ctrl_string_8].number = ctrl_string_8;
+	datastring[ctrl_string_9].number = ctrl_string_9;
+
+	PutString(&datastring[ctrl_string_9], VERS, 0);
 
 	datastring[serv_string_1].number = serv_string_1;
 	datastring[serv_string_2].number = serv_string_2;
@@ -269,6 +275,7 @@ void StartDisplayTask(void const * argument)
 /***************************** ТЕЛО ЗАДАЧ�? *******************************/
 	for(;;){
 
+		WDG_TackArr[0] = 1;
 		// УСЛОВ�?Е ОПРЕДЕЛЯЮЩЕЕ, ГОТОВЫ Л�? ДАННЫЕ ДЛЯ ВЫВОДА
 		// ЕСЛ�? НЕ ГОТОВЫ, ВЫВОД�?Т ОКНО ЗАГРУЗК�?,
 		// �?НАЧЕ ВЫПОЛНЯЕТ ВЫВОД ДАННЫХ НА Д�?СПЛЕЙ
@@ -411,7 +418,7 @@ void StartDisplayTask(void const * argument)
 			LoadWindow(&u8g2, logo_width, logo_height,(uint8_t *) &logo_bits);
 			u8g2_SendBuffer(&u8g2);
 		}
-		HAL_IWDG_Refresh(&hiwdg);
+
 		// ПЕРЕВОД�?М ЗАДАЧУ В РЕЖ�?М ОЖ�?ДАН�?Я (мс)
 		osDelay(10);
 	}
@@ -459,6 +466,7 @@ void StartDataTask(void const * argument)
 /***************************** ТЕЛО ЗАДАЧ�? *******************************/
 	for(;;){
 
+		WDG_TackArr[1] = 1;
 		// ЕСЛ�? RX НЕ В ПРОСТОЕ, ТО ЖДЕМ ОПРЕДЕЛЕННОЕ ВРЕМЯ
 		// �? НАЧ�?НАЕМ ПО�?СК СТАРТОВОЙ КОМБ�?НАЦ�?�?
 		// УСЛОВ�?Е ПОМАГАЕТ ПАРС�?ТЬ НОВЫЙ ПАКЕТ ОД�?Н РАЗ
@@ -639,7 +647,7 @@ void StartDataTask(void const * argument)
 		}
 
 		// ОБНАВЛЯЕМ WATHDOG
-		HAL_IWDG_Refresh(&hiwdg);
+
 
 //		if(!HAL_GPIO_ReadPin(STM32_BUTTON_POWER_GPIO_Port, STM32_BUTTON_POWER_Pin)){
 			HAL_GPIO_WritePin(STM32_BUTTON_LED_POWER_GPIO_Port, STM32_BUTTON_LED_POWER_Pin, GPIO_PIN_SET);
@@ -732,6 +740,8 @@ void StartControlTask(void const * argument)
 	osDelay(500);
 /***************************** ТЕЛО ЗАДАЧ�? *******************************/
 	for(;;){
+
+		WDG_TackArr[2] = 1;
 
 /*--------------------- ОБРАБАТЫВАЕМ НАЖАТ�?Я КНОПОК ---------------------*/
 
@@ -1014,7 +1024,6 @@ void StartControlTask(void const * argument)
 				// ЭТОТ СЧЕТЧ�?К ОТСЧ�?ТЫВАЕТ КОЛ�?ЧЕСТВО С�?МВОЛОВ ДЛЯ РАСЧЕТА CRC
 				crc_count++;
 
-
 				sB_pointer++;
 
 				// ЗАП�?СЫВАЕМ НОМЕР СТРОК�?, НАЧ�?НАЕТСЯ С 1 �? ДО 4
@@ -1137,6 +1146,8 @@ void StartLEDsTask(void const * argument)
 
 	for(;;)
 	{
+		WDG_TackArr[3] = 1;
+
 		// ПАРС�?М СТРОКУ СВЕТОД�?ОДОВ
 		LEDStringPars((string_t *)&datastring,(RGB_status *) &RGB);
 
@@ -1182,6 +1193,23 @@ void StartLEDsTask(void const * argument)
  */
 void UPTIME_IRQHandler(){
 	uptime_tick++;
+}
+
+void WDG_tim13_Handler(){
+
+
+	if(WDG_TackArr[0] && WDG_TackArr[1] && WDG_TackArr[2] && WDG_TackArr[3]){
+		HAL_GPIO_WritePin(SYM_LED_G_GPIO_Port, SYM_LED_G_Pin, GPIO_PIN_SET);
+		WDG_TackArr[0] = 0;
+		WDG_TackArr[1] = 0;
+		WDG_TackArr[2] = 0;
+		WDG_TackArr[3] = 0;
+		HAL_IWDG_Refresh(&hiwdg);
+	}
+	else HAL_GPIO_WritePin(SYM_LED_B_GPIO_Port, SYM_LED_B_Pin, GPIO_PIN_SET);
+	HAL_Delay(1);
+	HAL_GPIO_WritePin(SYM_LED_G_GPIO_Port, SYM_LED_G_Pin, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(SYM_LED_B_GPIO_Port, SYM_LED_B_Pin, GPIO_PIN_RESET);
 }
 
 uint16_t ADC_Mean(uint16_t* ADC_arr, uint8_t len){
@@ -1633,6 +1661,7 @@ void ServiceModeButtonHandler(uint8_t *mem, uint8_t *mem2, uint32_t *hold, uint1
 			datastring[ctrl_string_6].status = service_mode;
 			datastring[ctrl_string_7].status = service_mode;
 			datastring[ctrl_string_8].status = service_mode;
+			datastring[ctrl_string_9].status = service_mode;
 		}
 	}
 	else{
