@@ -1,4 +1,5 @@
 "Core/Src/CRC32.o"
+"Core/Src/NTC.o"
 "Core/Src/adc.o"
 "Core/Src/dma.o"
 "Core/Src/freertos.o"

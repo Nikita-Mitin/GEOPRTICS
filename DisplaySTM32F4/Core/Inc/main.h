@@ -54,7 +54,7 @@ extern "C" {
 #define string_pack_amount 	36					// макс_количество_строк_в_1-ом_пакете
 
 #define start_serv_string	155					// начало_служебных_строк
-#define start_ctrl_string	140					// начало_строк_контроля
+#define start_ctrl_string	144					// начало_строк_контроля
 
 #define degree_sym_amount	4					// максимальное_количество_знаков_градуса_в_строке
 #define UartBufSize 		4096				// размер_буфера_UART
@@ -224,7 +224,7 @@ uint16_t ADC_to_Volt(uint16_t adc_val);
 
 /*----------------------------- ФУНКЦ�?�? РАСЧЕТА ------------------------------*/
 uint8_t TemperatureGetData(uint16_t);
-
+int8_t NTC_getTemp(uint16_t ADCresult);
 /*--------------------------- ОБРАБОТЧ�?К�? НАЖАТ�?Й ----------------------------*/
 void PowerButtonHandler(uint32_t *,uint8_t *,uint8_t *, uint16_t); //!
 void ScrollingButtonHandler(uint8_t *, uint32_t*, uint8_t*);

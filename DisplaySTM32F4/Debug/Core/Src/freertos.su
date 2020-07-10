@@ -3,7 +3,7 @@ freertos.c:126:6:MX_FREERTOS_Init	208	static
 freertos.c:197:6:StartDefaultTask	16	static
 freertos.c:252:6:StartDisplayTask	712	static
 freertos.c:438:6:StartDataTask	2248	static
-freertos.c:669:6:StartControlTask	1144	static
+freertos.c:669:6:StartControlTask	904	static
 freertos.c:1113:6:StartLEDsTask	168	static
 freertos.c:1194:6:UPTIME_IRQHandler	4	static
 freertos.c:1198:6:WDG_tim13_Handler	8	static

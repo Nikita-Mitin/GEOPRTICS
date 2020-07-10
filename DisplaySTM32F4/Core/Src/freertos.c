@@ -244,7 +244,7 @@ void StartDefaultTask(void const * argument)
  * 															*
  *				    ЗАДАЧА Р�?СОВАН�?Я НА Д�?СПЛЕЙ			*
  *				    ОТБ�?РАЕТ СТРОК�? ДЛЯ ВЫВОДА				*
- *				  	ПР�?Н�?МАЕТ ЗНАЧЕН�?Е КУРСОРА				*
+ *				  	ПР�?Н�?МАЕТ ЗНАЧЕН�?Е КУРСОРА			*
  *				   	ВЫВОД�?Т СТРОК�? НА Д�?СПЛЕЙ				*
  *				   											*
  ************************************************************/
@@ -893,7 +893,7 @@ void StartControlTask(void const * argument)
 
 							ADC_mid = ADC_Mean(ADC_statistics[adc_count], 5);
 
-							itoa(ADC_to_Volt(ADC_mid),(char *)&ADC_char, 10);
+							itoa(NTC_getTemp(ADC_mid),(char *)&ADC_char, 10);
 							break;
 
 						case 2:
