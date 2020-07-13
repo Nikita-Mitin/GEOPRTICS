@@ -13026,3 +13026,353 @@
 2020-07-10 15:28:42,936 [INFO] ProjectBuilder:2894 - Time for Generating toolchain IDE Files: 3225mS.
 2020-07-10 15:28:42,937 [INFO] ProjectBuilder:1878 - Time for Copy CMSIS : 0mS.
 2020-07-10 15:28:42,944 [INFO] ProjectBuilder:1878 - Time for Copy CMSIS : 0mS.
+2020-07-10 19:15:22,667 [INFO] MainUpdater:2230 - connection check result : 10
+2020-07-10 19:15:23,411 [INFO] MicroXplorer:390 - Change Database Path : 
+2020-07-10 19:15:23,411 [INFO] MicroXplorer:420 - Change Database Version : DB.5.0.60
+2020-07-10 19:15:23,435 [INFO] PinOutPanel:1420 - setPackage(No Configuration,No Configuration)
+2020-07-10 19:15:23,443 [INFO] UtilMem:74 - Begin LoadConfig() Used Memory: 801933376 Bytes (1073741824)
+2020-07-10 19:15:23,443 [INFO] OpenFileManager:274 - Change cursor
+2020-07-10 19:15:23,507 [INFO] RulesReader:52 - Compatibility file has been processed (208 Rules)
+2020-07-10 19:15:27,175 [INFO] ImportTextPane:162 - (OptionalMessage_ERROR) IP (ADC1) : Parameter (Rank) has Id (3#ChannelRegularConversion) currently not set
+2020-07-10 19:15:27,175 [INFO] ImportTextPane:162 - (OptionalMessage_ERROR) IP (ADC1) : Parameter (Channel) has Id (3#ChannelRegularConversion) currently not set
+2020-07-10 19:15:27,175 [INFO] ImportTextPane:162 - (OptionalMessage_ERROR) IP (ADC1) : Parameter (SamplingTime) has Id (3#ChannelRegularConversion) currently not set
+2020-07-10 19:15:27,175 [INFO] ImportTextPane:162 - (OptionalMessage_ERROR) IP (ADC1) : Parameter (Rank) has Id (4#ChannelRegularConversion) currently not set
+2020-07-10 19:15:27,175 [INFO] ImportTextPane:162 - (OptionalMessage_ERROR) IP (ADC1) : Parameter (Channel) has Id (4#ChannelRegularConversion) currently not set
+2020-07-10 19:15:27,175 [INFO] ImportTextPane:162 - (OptionalMessage_ERROR) IP (ADC1) : Parameter (SamplingTime) has Id (4#ChannelRegularConversion) currently not set
+2020-07-10 19:15:27,175 [INFO] ImportTextPane:162 - (OptionalMessage_ERROR) IP (ADC1) : Parameter (Rank) has Id (5#ChannelRegularConversion) currently not set
+2020-07-10 19:15:27,175 [INFO] ImportTextPane:162 - (OptionalMessage_ERROR) IP (ADC1) : Parameter (Channel) has Id (5#ChannelRegularConversion) currently not set
+2020-07-10 19:15:27,175 [INFO] ImportTextPane:162 - (OptionalMessage_ERROR) IP (ADC1) : Parameter (SamplingTime) has Id (5#ChannelRegularConversion) currently not set
+2020-07-10 19:15:27,175 [INFO] ImportTextPane:162 - (OptionalMessage_ERROR) IP (ADC1) : Parameter (Rank) has Id (6#ChannelRegularConversion) currently not set
+2020-07-10 19:15:27,175 [INFO] ImportTextPane:162 - (OptionalMessage_ERROR) IP (ADC1) : Parameter (Channel) has Id (6#ChannelRegularConversion) currently not set
+2020-07-10 19:15:27,175 [INFO] ImportTextPane:162 - (OptionalMessage_ERROR) IP (ADC1) : Parameter (SamplingTime) has Id (6#ChannelRegularConversion) currently not set
+2020-07-10 19:15:27,175 [INFO] ImportTextPane:162 - (OptionalMessage_ERROR) IP (ADC1) : Parameter (Rank) has Id (7#ChannelRegularConversion) currently not set
+2020-07-10 19:15:27,175 [INFO] ImportTextPane:162 - (OptionalMessage_ERROR) IP (ADC1) : Parameter (Channel) has Id (7#ChannelRegularConversion) currently not set
+2020-07-10 19:15:27,175 [INFO] ImportTextPane:162 - (OptionalMessage_ERROR) IP (ADC1) : Parameter (SamplingTime) has Id (7#ChannelRegularConversion) currently not set
+2020-07-10 19:15:27,175 [INFO] ImportTextPane:162 - (OptionalMessage_ERROR) IP (DMA) : Parameter (Instance) has Id (USART3_RX) currently not set
+2020-07-10 19:15:27,175 [INFO] ImportTextPane:162 - (OptionalMessage_ERROR) IP (DMA) : Parameter (Channel) has Id (USART3_RX) currently not set
+2020-07-10 19:15:27,175 [INFO] ImportTextPane:162 - (OptionalMessage_ERROR) IP (DMA) : Parameter (Direction) has Id (USART3_RX) currently not set
+2020-07-10 19:15:27,175 [INFO] ImportTextPane:162 - (OptionalMessage_ERROR) IP (DMA) : Parameter (PeriphInc) has Id (USART3_RX) currently not set
+2020-07-10 19:15:27,175 [INFO] ImportTextPane:162 - (OptionalMessage_ERROR) IP (DMA) : Parameter (MemInc) has Id (USART3_RX) currently not set
+2020-07-10 19:15:27,175 [INFO] ImportTextPane:162 - (OptionalMessage_ERROR) IP (DMA) : Parameter (PeriphDataAlignment) has Id (USART3_RX) currently not set
+2020-07-10 19:15:27,175 [INFO] ImportTextPane:162 - (OptionalMessage_ERROR) IP (DMA) : Parameter (MemDataAlignment) has Id (USART3_RX) currently not set
+2020-07-10 19:15:27,175 [INFO] ImportTextPane:162 - (OptionalMessage_ERROR) IP (DMA) : Parameter (Mode) has Id (USART3_RX) currently not set
+2020-07-10 19:15:27,175 [INFO] ImportTextPane:162 - (OptionalMessage_ERROR) IP (DMA) : Parameter (Priority) has Id (USART3_RX) currently not set
+2020-07-10 19:15:27,175 [INFO] ImportTextPane:162 - (OptionalMessage_ERROR) IP (DMA) : Parameter (FIFOMode) has Id (USART3_RX) currently not set
+2020-07-10 19:15:27,175 [INFO] ImportTextPane:162 - (OptionalMessage_ERROR) IP (DMA) : Parameter (Instance) has Id (ADC1) currently not set
+2020-07-10 19:15:27,175 [INFO] ImportTextPane:162 - (OptionalMessage_ERROR) IP (DMA) : Parameter (Channel) has Id (ADC1) currently not set
+2020-07-10 19:15:27,175 [INFO] ImportTextPane:162 - (OptionalMessage_ERROR) IP (DMA) : Parameter (Direction) has Id (ADC1) currently not set
+2020-07-10 19:15:27,175 [INFO] ImportTextPane:162 - (OptionalMessage_ERROR) IP (DMA) : Parameter (PeriphInc) has Id (ADC1) currently not set
+2020-07-10 19:15:27,175 [INFO] ImportTextPane:162 - (OptionalMessage_ERROR) IP (DMA) : Parameter (MemInc) has Id (ADC1) currently not set
+2020-07-10 19:15:27,175 [INFO] ImportTextPane:162 - (OptionalMessage_ERROR) IP (DMA) : Parameter (PeriphDataAlignment) has Id (ADC1) currently not set
+2020-07-10 19:15:27,175 [INFO] ImportTextPane:162 - (OptionalMessage_ERROR) IP (DMA) : Parameter (MemDataAlignment) has Id (ADC1) currently not set
+2020-07-10 19:15:27,175 [INFO] ImportTextPane:162 - (OptionalMessage_ERROR) IP (DMA) : Parameter (Mode) has Id (ADC1) currently not set
+2020-07-10 19:15:27,175 [INFO] ImportTextPane:162 - (OptionalMessage_ERROR) IP (DMA) : Parameter (Priority) has Id (ADC1) currently not set
+2020-07-10 19:15:27,175 [INFO] ImportTextPane:162 - (OptionalMessage_ERROR) IP (DMA) : Parameter (FIFOMode) has Id (ADC1) currently not set
+2020-07-10 19:15:27,183 [INFO] ImportTextPane:162 - (OptionalMessage_ERROR) IP (RCC) : Parameter (RTCHSEDivFreq_Value) has invalid value (4000000)
+2020-07-10 19:15:27,399 [INFO] UtilMem:74 - End LoadConfig() Used Memory: 792495656 Bytes (1073741824)
+2020-07-10 19:15:27,631 [INFO] ThirdParty:899 - CMSIS Pack Vendor :STMicroelectronics X-CUBE-SUBG2 1.1.0
+2020-07-10 19:15:27,631 [INFO] ThirdParty:899 - CMSIS Pack Vendor :STMicroelectronics X-CUBE-NFC4 1.4.0
+2020-07-10 19:15:27,631 [INFO] ThirdParty:899 - CMSIS Pack Vendor :STMicroelectronics X-CUBE-NFC4 1.5.0
+2020-07-10 19:15:27,631 [INFO] ThirdParty:899 - CMSIS Pack Vendor :STMicroelectronics X-CUBE-AI 4.1.0
+2020-07-10 19:15:27,631 [INFO] ThirdParty:899 - CMSIS Pack Vendor :STMicroelectronics FreeRTOS 0.0.1
+2020-07-10 19:15:27,639 [INFO] ThirdParty:899 - CMSIS Pack Vendor :STMicroelectronics X-CUBE-ALGOBUILD 1.0.0
+2020-07-10 19:15:27,639 [INFO] ThirdParty:899 - CMSIS Pack Vendor :STMicroelectronics X-CUBE-MEMS1 6.2.0
+2020-07-10 19:15:27,639 [INFO] ThirdParty:899 - CMSIS Pack Vendor :STMicroelectronics X-CUBE-AI 4.0.0
+2020-07-10 19:15:27,639 [INFO] ThirdParty:899 - CMSIS Pack Vendor :STMicroelectronics X-CUBE-BLE1 4.4.0
+2020-07-10 19:15:27,639 [INFO] ThirdParty:899 - CMSIS Pack Vendor :STMicroelectronics X-CUBE-MEMS1 7.0.0
+2020-07-10 19:15:27,639 [INFO] ThirdParty:899 - CMSIS Pack Vendor :STMicroelectronics X-CUBE-GNSS1 3.0.0
+2020-07-10 19:15:27,639 [INFO] ThirdParty:899 - CMSIS Pack Vendor :STMicroelectronics X-CUBE-NFC4 1.5.2
+2020-07-10 19:15:27,639 [INFO] ThirdParty:899 - CMSIS Pack Vendor :STMicroelectronics X-CUBE-MEMS1 7.1.0
+2020-07-10 19:15:27,639 [INFO] ThirdParty:899 - CMSIS Pack Vendor :STMicroelectronics X-CUBE-AI 5.1.1
+2020-07-10 19:15:27,639 [INFO] ThirdParty:899 - CMSIS Pack Vendor :STMicroelectronics X-CUBE-MEMS1 7.2.0
+2020-07-10 19:15:28,255 [INFO] PinOutPanel:1420 - setPackage(No Configuration,No Configuration)
+2020-07-10 19:15:28,303 [INFO] PinOutPanel:1420 - setPackage(STM32F407VGTx,LQFP100)
+2020-07-10 19:15:28,975 [INFO] UtilMem:74 - Before build in PCC Used Memory: 512623016 Bytes (1073741824)
+2020-07-10 19:15:29,463 [INFO] SharedServices:71 - Folder for power plug-in: C:/Users/hp/.stm32cubemx/plugins/power
+2020-07-10 19:15:29,535 [INFO] SharedServices:71 - Folder for power plug-in: C:/Users/hp/.stm32cubemx/plugins/power
+2020-07-10 19:15:29,599 [INFO] SharedServices:71 - Folder for power plug-in: C:/Users/hp/.stm32cubemx/plugins/power
+2020-07-10 19:15:29,599 [INFO] SharedServices:71 - Folder for power plug-in: C:/Users/hp/.stm32cubemx/plugins/power
+2020-07-10 19:15:29,703 [INFO] UtilMem:74 - After build in PCC Used Memory: 558760360 Bytes (1073741824)
+2020-07-10 19:15:29,751 [INFO] IPUIPlugin:65 - create IPUIPlugin
+2020-07-10 19:15:29,751 [INFO] IPUIPlugin:65 - create IPUIPlugin
+2020-07-10 19:15:29,751 [INFO] IPUIPlugin:65 - create IPUIPlugin
+2020-07-10 19:15:29,751 [INFO] IPUIPlugin:65 - create IPUIPlugin
+2020-07-10 19:15:29,751 [INFO] IPUIPlugin:65 - create IPUIPlugin
+2020-07-10 19:15:29,759 [INFO] IPUIPlugin:65 - create IPUIPlugin
+2020-07-10 19:15:29,767 [INFO] IPUIPlugin:65 - create IPUIPlugin
+2020-07-10 19:15:29,767 [INFO] IPUIPlugin:65 - create IPUIPlugin
+2020-07-10 19:15:29,767 [INFO] IPUIPlugin:65 - create IPUIPlugin
+2020-07-10 19:15:29,767 [INFO] IPUIPlugin:65 - create IPUIPlugin
+2020-07-10 19:15:29,767 [INFO] IPUIPlugin:65 - create IPUIPlugin
+2020-07-10 19:15:29,767 [INFO] IPUIPlugin:65 - create IPUIPlugin
+2020-07-10 19:15:29,767 [INFO] IPUIPlugin:65 - create IPUIPlugin
+2020-07-10 19:15:29,767 [INFO] IPUIPlugin:65 - create IPUIPlugin
+2020-07-10 19:15:29,767 [INFO] IPUIPlugin:65 - create IPUIPlugin
+2020-07-10 19:15:29,767 [INFO] IPUIPlugin:65 - create IPUIPlugin
+2020-07-10 19:15:29,767 [INFO] IPUIPlugin:65 - create IPUIPlugin
+2020-07-10 19:15:29,767 [INFO] IPUIPlugin:65 - create IPUIPlugin
+2020-07-10 19:15:29,767 [INFO] IPUIPlugin:65 - create IPUIPlugin
+2020-07-10 19:15:29,767 [INFO] IPUIPlugin:65 - create IPUIPlugin
+2020-07-10 19:15:29,767 [INFO] IPUIPlugin:65 - create IPUIPlugin
+2020-07-10 19:15:29,767 [INFO] IPUIPlugin:65 - create IPUIPlugin
+2020-07-10 19:15:29,767 [INFO] IPUIPlugin:65 - create IPUIPlugin
+2020-07-10 19:15:29,767 [INFO] IPUIPlugin:65 - create IPUIPlugin
+2020-07-10 19:15:29,767 [INFO] IPUIPlugin:65 - create IPUIPlugin
+2020-07-10 19:15:29,767 [INFO] IPUIPlugin:65 - create IPUIPlugin
+2020-07-10 19:15:29,767 [INFO] IPUIPlugin:65 - create IPUIPlugin
+2020-07-10 19:15:29,767 [INFO] IPUIPlugin:65 - create IPUIPlugin
+2020-07-10 19:15:29,767 [INFO] IPUIPlugin:65 - create IPUIPlugin
+2020-07-10 19:15:29,775 [INFO] IPUIPlugin:65 - create IPUIPlugin
+2020-07-10 19:15:29,775 [INFO] IPUIPlugin:65 - create IPUIPlugin
+2020-07-10 19:15:29,775 [INFO] IPUIPlugin:65 - create IPUIPlugin
+2020-07-10 19:15:29,775 [INFO] IPUIPlugin:65 - create IPUIPlugin
+2020-07-10 19:15:29,775 [INFO] IPUIPlugin:65 - create IPUIPlugin
+2020-07-10 19:15:29,775 [INFO] IPUIPlugin:65 - create IPUIPlugin
+2020-07-10 19:15:29,775 [INFO] IPUIPlugin:65 - create IPUIPlugin
+2020-07-10 19:15:29,775 [INFO] IPUIPlugin:65 - create IPUIPlugin
+2020-07-10 19:15:29,775 [INFO] IPUIPlugin:65 - create IPUIPlugin
+2020-07-10 19:15:29,775 [INFO] IPUIPlugin:65 - create IPUIPlugin
+2020-07-10 19:15:29,775 [INFO] IPUIPlugin:65 - create IPUIPlugin
+2020-07-10 19:15:29,775 [INFO] IPUIPlugin:65 - create IPUIPlugin
+2020-07-10 19:15:29,775 [INFO] IPUIPlugin:65 - create IPUIPlugin
+2020-07-10 19:15:29,775 [INFO] IPUIPlugin:65 - create IPUIPlugin
+2020-07-10 19:15:29,775 [INFO] IPUIPlugin:65 - create IPUIPlugin
+2020-07-10 19:15:29,775 [INFO] IPUIPlugin:65 - create IPUIPlugin
+2020-07-10 19:15:29,775 [INFO] IPUIPlugin:65 - create IPUIPlugin
+2020-07-10 19:15:29,775 [INFO] IPUIPlugin:65 - create IPUIPlugin
+2020-07-10 19:15:29,775 [INFO] IPUIPlugin:65 - create IPUIPlugin
+2020-07-10 19:15:29,775 [INFO] IPUIPlugin:65 - create IPUIPlugin
+2020-07-10 19:15:29,775 [INFO] IPUIPlugin:65 - create IPUIPlugin
+2020-07-10 19:15:29,775 [INFO] IPUIPlugin:65 - create IPUIPlugin
+2020-07-10 19:15:29,783 [INFO] IPUIPlugin:65 - create IPUIPlugin
+2020-07-10 19:15:29,783 [INFO] IPUIPlugin:65 - create IPUIPlugin
+2020-07-10 19:15:29,783 [INFO] IPUIPlugin:65 - create IPUIPlugin
+2020-07-10 19:15:29,783 [INFO] IPUIPlugin:65 - create IPUIPlugin
+2020-07-10 19:15:29,783 [INFO] IPUIPlugin:65 - create IPUIPlugin
+2020-07-10 19:15:29,783 [INFO] IPUIPlugin:65 - create IPUIPlugin
+2020-07-10 19:15:29,783 [INFO] IPUIPlugin:65 - create IPUIPlugin
+2020-07-10 19:15:29,807 [WARN] IP:1936 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2020-07-10 19:15:29,807 [WARN] IP:1936 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2020-07-10 19:15:29,823 [ERROR] FreeRTOS:936 - Null or empty value: should not occur! (nothing added to the table)
+2020-07-10 19:15:29,983 [INFO] ApiDbMcu:451 - Load IP Config File for FREERTOS
+2020-07-10 19:15:30,519 [INFO] OpenFileManager:294 - Restore cursor
+2020-07-10 19:15:31,031 [WARN] IP:1936 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2020-07-10 19:15:31,031 [WARN] IP:1936 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2020-07-10 19:15:31,031 [WARN] IP:1936 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2020-07-10 19:15:31,031 [WARN] IP:1936 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2020-07-10 19:15:52,927 [INFO] UtilMem:74 - End SaveConfig() Used Memory: 842924456 Bytes (1073741824)
+2020-07-10 19:15:54,632 [INFO] UtilMem:74 - End SaveConfig() Used Memory: 493226384 Bytes (1073741824)
+2020-07-10 19:15:55,048 [INFO] BlockDiagram:2671 - set Specific Code input for plugin: SPI
+2020-07-10 19:15:55,048 [INFO] BlockDiagram:2671 - set Specific Code input for plugin: SPI
+2020-07-10 19:15:55,048 [INFO] BlockDiagram:2671 - set Specific Code input for plugin: FREERTOS
+2020-07-10 19:15:55,048 [INFO] BlockDiagram:2671 - set Specific Code input for plugin: IWDG
+2020-07-10 19:15:55,048 [INFO] BlockDiagram:2671 - set Specific Code input for plugin: TIM6_7
+2020-07-10 19:15:55,048 [INFO] BlockDiagram:2671 - set Specific Code input for plugin: SYS
+2020-07-10 19:15:55,048 [INFO] BlockDiagram:2671 - set Specific Code input for plugin: ADC
+2020-07-10 19:15:55,048 [INFO] BlockDiagram:2671 - set Specific Code input for plugin: RCC
+2020-07-10 19:15:55,048 [INFO] BlockDiagram:2671 - set Specific Code input for plugin: I2C
+2020-07-10 19:15:55,048 [INFO] BlockDiagram:2671 - set Specific Code input for plugin: NVIC
+2020-07-10 19:15:55,048 [INFO] BlockDiagram:2671 - set Specific Code input for plugin: USART
+2020-07-10 19:15:55,048 [INFO] BlockDiagram:2671 - set Specific Code input for plugin: USART
+2020-07-10 19:15:55,048 [INFO] BlockDiagram:2671 - set Specific Code input for plugin: TIM1_8
+2020-07-10 19:15:55,048 [INFO] BlockDiagram:2671 - set Specific Code input for plugin: DMA
+2020-07-10 19:15:55,048 [INFO] BlockDiagram:2671 - set Specific Code input for plugin: TIM1_8
+2020-07-10 19:15:55,048 [INFO] BlockDiagram:2671 - set Specific Code input for plugin: GPIO
+2020-07-10 19:15:55,080 [INFO] CodeGenerator:603 - code generatio: config db path: M:\ghjuhfvvs\STM32CubeIDE_1.2.0\STM32CubeIDE\plugins\com.st.stm32cube.common.mx_5.6.1.202004052303\\db\
+2020-07-10 19:15:55,112 [INFO] Argument:278 - Argument : hdmavalue: null
+2020-07-10 19:15:55,120 [INFO] Argument:280 - 	 sub Args: 
+2020-07-10 19:15:55,120 [INFO] Argument:278 - Argument : Instancevalue: DMA2_Stream0
+2020-07-10 19:15:55,120 [INFO] Argument:288 - Argument : Instancevalue: DMA2_Stream0
+2020-07-10 19:15:55,120 [INFO] Argument:278 - Argument : Initvalue: null
+2020-07-10 19:15:55,120 [INFO] Argument:280 - 	 sub Args: 
+2020-07-10 19:15:55,120 [INFO] Argument:278 - Argument : Channelvalue: DMA_CHANNEL_0
+2020-07-10 19:15:55,120 [INFO] Argument:288 - Argument : Channelvalue: DMA_CHANNEL_0
+2020-07-10 19:15:55,120 [INFO] Argument:278 - Argument : Directionvalue: DMA_PERIPH_TO_MEMORY
+2020-07-10 19:15:55,120 [INFO] Argument:288 - Argument : Directionvalue: DMA_PERIPH_TO_MEMORY
+2020-07-10 19:15:55,120 [INFO] Argument:278 - Argument : PeriphIncvalue: DMA_PINC_DISABLE
+2020-07-10 19:15:55,120 [INFO] Argument:288 - Argument : PeriphIncvalue: DMA_PINC_DISABLE
+2020-07-10 19:15:55,120 [INFO] Argument:278 - Argument : MemIncvalue: DMA_MINC_ENABLE
+2020-07-10 19:15:55,120 [INFO] Argument:288 - Argument : MemIncvalue: DMA_MINC_ENABLE
+2020-07-10 19:15:55,120 [INFO] Argument:278 - Argument : PeriphDataAlignmentvalue: DMA_PDATAALIGN_HALFWORD
+2020-07-10 19:15:55,120 [INFO] Argument:288 - Argument : PeriphDataAlignmentvalue: DMA_PDATAALIGN_HALFWORD
+2020-07-10 19:15:55,120 [INFO] Argument:278 - Argument : MemDataAlignmentvalue: DMA_MDATAALIGN_HALFWORD
+2020-07-10 19:15:55,120 [INFO] Argument:288 - Argument : MemDataAlignmentvalue: DMA_MDATAALIGN_HALFWORD
+2020-07-10 19:15:55,120 [INFO] Argument:278 - Argument : Modevalue: DMA_CIRCULAR
+2020-07-10 19:15:55,120 [INFO] Argument:288 - Argument : Modevalue: DMA_CIRCULAR
+2020-07-10 19:15:55,120 [INFO] Argument:278 - Argument : Priorityvalue: DMA_PRIORITY_LOW
+2020-07-10 19:15:55,120 [INFO] Argument:288 - Argument : Priorityvalue: DMA_PRIORITY_LOW
+2020-07-10 19:15:55,120 [INFO] Argument:278 - Argument : FIFOModevalue: DMA_FIFOMODE_DISABLE
+2020-07-10 19:15:55,120 [INFO] Argument:288 - Argument : FIFOModevalue: DMA_FIFOMODE_DISABLE
+2020-07-10 19:15:55,120 [INFO] Argument:278 - Argument : FIFOThresholdvalue: null
+2020-07-10 19:15:55,120 [INFO] Argument:288 - Argument : FIFOThresholdvalue: null
+2020-07-10 19:15:55,120 [INFO] Argument:278 - Argument : MemBurstvalue: null
+2020-07-10 19:15:55,120 [INFO] Argument:288 - Argument : MemBurstvalue: null
+2020-07-10 19:15:55,120 [INFO] Argument:278 - Argument : PeriphBurstvalue: null
+2020-07-10 19:15:55,120 [INFO] Argument:288 - Argument : PeriphBurstvalue: null
+2020-07-10 19:15:55,120 [INFO] Argument:278 - Argument : Lockvalue: null
+2020-07-10 19:15:55,120 [INFO] Argument:288 - Argument : Lockvalue: null
+2020-07-10 19:15:55,120 [INFO] Argument:278 - Argument : Statevalue: null
+2020-07-10 19:15:55,120 [INFO] Argument:288 - Argument : Statevalue: null
+2020-07-10 19:15:55,120 [INFO] Argument:278 - Argument : Parentvalue: null
+2020-07-10 19:15:55,120 [INFO] Argument:288 - Argument : Parentvalue: null
+2020-07-10 19:15:55,120 [INFO] Argument:278 - Argument : XferCpltCallbackvalue: null
+2020-07-10 19:15:55,120 [INFO] Argument:288 - Argument : XferCpltCallbackvalue: null
+2020-07-10 19:15:55,120 [INFO] Argument:278 - Argument : XferHalfCpltCallbackvalue: null
+2020-07-10 19:15:55,120 [INFO] Argument:288 - Argument : XferHalfCpltCallbackvalue: null
+2020-07-10 19:15:55,120 [INFO] Argument:278 - Argument : XferM1CpltCallbackvalue: null
+2020-07-10 19:15:55,120 [INFO] Argument:288 - Argument : XferM1CpltCallbackvalue: null
+2020-07-10 19:15:55,120 [INFO] Argument:278 - Argument : XferErrorCallbackvalue: null
+2020-07-10 19:15:55,120 [INFO] Argument:288 - Argument : XferErrorCallbackvalue: null
+2020-07-10 19:15:55,120 [INFO] Argument:278 - Argument : ErrorCodevalue: null
+2020-07-10 19:15:55,120 [INFO] Argument:288 - Argument : ErrorCodevalue: null
+2020-07-10 19:15:55,128 [WARN] IP:1936 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2020-07-10 19:15:55,128 [WARN] IP:1936 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2020-07-10 19:15:55,160 [INFO] Argument:278 - Argument : hdmavalue: null
+2020-07-10 19:15:55,160 [INFO] Argument:280 - 	 sub Args: 
+2020-07-10 19:15:55,160 [INFO] Argument:278 - Argument : Instancevalue: DMA1_Stream1
+2020-07-10 19:15:55,160 [INFO] Argument:288 - Argument : Instancevalue: DMA1_Stream1
+2020-07-10 19:15:55,160 [INFO] Argument:278 - Argument : Initvalue: null
+2020-07-10 19:15:55,160 [INFO] Argument:280 - 	 sub Args: 
+2020-07-10 19:15:55,160 [INFO] Argument:278 - Argument : Channelvalue: DMA_CHANNEL_4
+2020-07-10 19:15:55,168 [INFO] Argument:288 - Argument : Channelvalue: DMA_CHANNEL_4
+2020-07-10 19:15:55,168 [INFO] Argument:278 - Argument : Directionvalue: DMA_PERIPH_TO_MEMORY
+2020-07-10 19:15:55,168 [INFO] Argument:288 - Argument : Directionvalue: DMA_PERIPH_TO_MEMORY
+2020-07-10 19:15:55,168 [INFO] Argument:278 - Argument : PeriphIncvalue: DMA_PINC_DISABLE
+2020-07-10 19:15:55,168 [INFO] Argument:288 - Argument : PeriphIncvalue: DMA_PINC_DISABLE
+2020-07-10 19:15:55,168 [INFO] Argument:278 - Argument : MemIncvalue: DMA_MINC_ENABLE
+2020-07-10 19:15:55,168 [INFO] Argument:288 - Argument : MemIncvalue: DMA_MINC_ENABLE
+2020-07-10 19:15:55,168 [INFO] Argument:278 - Argument : PeriphDataAlignmentvalue: DMA_PDATAALIGN_BYTE
+2020-07-10 19:15:55,168 [INFO] Argument:288 - Argument : PeriphDataAlignmentvalue: DMA_PDATAALIGN_BYTE
+2020-07-10 19:15:55,168 [INFO] Argument:278 - Argument : MemDataAlignmentvalue: DMA_MDATAALIGN_BYTE
+2020-07-10 19:15:55,168 [INFO] Argument:288 - Argument : MemDataAlignmentvalue: DMA_MDATAALIGN_BYTE
+2020-07-10 19:15:55,168 [INFO] Argument:278 - Argument : Modevalue: DMA_CIRCULAR
+2020-07-10 19:15:55,168 [INFO] Argument:288 - Argument : Modevalue: DMA_CIRCULAR
+2020-07-10 19:15:55,168 [INFO] Argument:278 - Argument : Priorityvalue: DMA_PRIORITY_LOW
+2020-07-10 19:15:55,168 [INFO] Argument:288 - Argument : Priorityvalue: DMA_PRIORITY_LOW
+2020-07-10 19:15:55,168 [INFO] Argument:278 - Argument : FIFOModevalue: DMA_FIFOMODE_DISABLE
+2020-07-10 19:15:55,168 [INFO] Argument:288 - Argument : FIFOModevalue: DMA_FIFOMODE_DISABLE
+2020-07-10 19:15:55,168 [INFO] Argument:278 - Argument : FIFOThresholdvalue: null
+2020-07-10 19:15:55,168 [INFO] Argument:288 - Argument : FIFOThresholdvalue: null
+2020-07-10 19:15:55,168 [INFO] Argument:278 - Argument : MemBurstvalue: null
+2020-07-10 19:15:55,168 [INFO] Argument:288 - Argument : MemBurstvalue: null
+2020-07-10 19:15:55,168 [INFO] Argument:278 - Argument : PeriphBurstvalue: null
+2020-07-10 19:15:55,168 [INFO] Argument:288 - Argument : PeriphBurstvalue: null
+2020-07-10 19:15:55,168 [INFO] Argument:278 - Argument : Lockvalue: null
+2020-07-10 19:15:55,168 [INFO] Argument:288 - Argument : Lockvalue: null
+2020-07-10 19:15:55,168 [INFO] Argument:278 - Argument : Statevalue: null
+2020-07-10 19:15:55,168 [INFO] Argument:288 - Argument : Statevalue: null
+2020-07-10 19:15:55,168 [INFO] Argument:278 - Argument : Parentvalue: null
+2020-07-10 19:15:55,168 [INFO] Argument:288 - Argument : Parentvalue: null
+2020-07-10 19:15:55,168 [INFO] Argument:278 - Argument : XferCpltCallbackvalue: null
+2020-07-10 19:15:55,168 [INFO] Argument:288 - Argument : XferCpltCallbackvalue: null
+2020-07-10 19:15:55,168 [INFO] Argument:278 - Argument : XferHalfCpltCallbackvalue: null
+2020-07-10 19:15:55,168 [INFO] Argument:288 - Argument : XferHalfCpltCallbackvalue: null
+2020-07-10 19:15:55,168 [INFO] Argument:278 - Argument : XferM1CpltCallbackvalue: null
+2020-07-10 19:15:55,168 [INFO] Argument:288 - Argument : XferM1CpltCallbackvalue: null
+2020-07-10 19:15:55,168 [INFO] Argument:278 - Argument : XferErrorCallbackvalue: null
+2020-07-10 19:15:55,168 [INFO] Argument:288 - Argument : XferErrorCallbackvalue: null
+2020-07-10 19:15:55,168 [INFO] Argument:278 - Argument : ErrorCodevalue: null
+2020-07-10 19:15:55,168 [INFO] Argument:288 - Argument : ErrorCodevalue: null
+2020-07-10 19:15:55,712 [INFO] CodeEngine:188 - oldGeneratedFile, M:\stm32\GEOPTICS\DisplaySTM32F4\MXTmpFiles\license.tmp_save
+2020-07-10 19:15:55,800 [INFO] CodeEngine:206 - Generated code: M:\stm32\GEOPTICS\DisplaySTM32F4\MXTmpFiles\license.tmp
+2020-07-10 19:15:55,928 [INFO] CodeEngine:188 - oldGeneratedFile, M:\stm32\GEOPTICS\DisplaySTM32F4\Core\Src\gpio.c_save
+2020-07-10 19:15:56,056 [INFO] CodeEngine:206 - Generated code: M:\stm32\GEOPTICS\DisplaySTM32F4\Core\Src\gpio.c
+2020-07-10 19:15:56,088 [INFO] CodeEngine:188 - oldGeneratedFile, M:\stm32\GEOPTICS\DisplaySTM32F4\Core\Inc\gpio.h_save
+2020-07-10 19:15:56,184 [INFO] CodeEngine:206 - Generated code: M:\stm32\GEOPTICS\DisplaySTM32F4\Core\Inc\gpio.h
+2020-07-10 19:15:58,312 [INFO] LogOutputStream:76 - [STDOUT_REDIRECT] Command line
+2020-07-10 19:15:58,320 [INFO] LogOutputStream:76 - [STDOUT_REDIRECT] Debug : prepare data for ADC
+2020-07-10 19:15:58,320 [INFO] LogOutputStream:76 - [STDOUT_REDIRECT] Command line test
+2020-07-10 19:15:58,360 [INFO] CodeEngine:188 - oldGeneratedFile, M:\stm32\GEOPTICS\DisplaySTM32F4\Core\Src\adc.c_save
+2020-07-10 19:15:58,512 [INFO] CodeEngine:206 - Generated code: M:\stm32\GEOPTICS\DisplaySTM32F4\Core\Src\adc.c
+2020-07-10 19:15:58,544 [INFO] CodeEngine:188 - oldGeneratedFile, M:\stm32\GEOPTICS\DisplaySTM32F4\Core\Inc\adc.h_save
+2020-07-10 19:15:58,640 [INFO] CodeEngine:206 - Generated code: M:\stm32\GEOPTICS\DisplaySTM32F4\Core\Inc\adc.h
+2020-07-10 19:15:58,640 [INFO] LogOutputStream:76 - [STDOUT_REDIRECT] Command line
+2020-07-10 19:15:58,640 [INFO] LogOutputStream:76 - [STDOUT_REDIRECT] Debug : prepare data for DMA
+2020-07-10 19:15:58,640 [INFO] LogOutputStream:76 - [STDOUT_REDIRECT] Command line test
+2020-07-10 19:15:58,720 [INFO] CodeEngine:188 - oldGeneratedFile, M:\stm32\GEOPTICS\DisplaySTM32F4\Core\Src\dma.c_save
+2020-07-10 19:15:58,824 [INFO] CodeEngine:206 - Generated code: M:\stm32\GEOPTICS\DisplaySTM32F4\Core\Src\dma.c
+2020-07-10 19:15:58,832 [INFO] CodeEngine:188 - oldGeneratedFile, M:\stm32\GEOPTICS\DisplaySTM32F4\Core\Inc\dma.h_save
+2020-07-10 19:15:58,928 [INFO] CodeEngine:206 - Generated code: M:\stm32\GEOPTICS\DisplaySTM32F4\Core\Inc\dma.h
+2020-07-10 19:15:58,928 [INFO] LogOutputStream:76 - [STDOUT_REDIRECT] Command line
+2020-07-10 19:15:58,984 [INFO] Middleware:1103 - No code input for Bsp Dependency
+2020-07-10 19:15:59,016 [INFO] CodeEngine:188 - oldGeneratedFile, M:\stm32\GEOPTICS\DisplaySTM32F4\MXTmpFiles\rtos_inc.tmp_save
+2020-07-10 19:15:59,104 [INFO] CodeEngine:206 - Generated code: M:\stm32\GEOPTICS\DisplaySTM32F4\MXTmpFiles\rtos_inc.tmp
+2020-07-10 19:15:59,144 [INFO] CodeEngine:188 - oldGeneratedFile, M:\stm32\GEOPTICS\DisplaySTM32F4\MXTmpFiles\rtos_vars.tmp_save
+2020-07-10 19:15:59,232 [INFO] CodeEngine:206 - Generated code: M:\stm32\GEOPTICS\DisplaySTM32F4\MXTmpFiles\rtos_vars.tmp
+2020-07-10 19:15:59,248 [INFO] CodeEngine:188 - oldGeneratedFile, M:\stm32\GEOPTICS\DisplaySTM32F4\MXTmpFiles\rtos_pfp.tmp_save
+2020-07-10 19:15:59,368 [INFO] CodeEngine:206 - Generated code: M:\stm32\GEOPTICS\DisplaySTM32F4\MXTmpFiles\rtos_pfp.tmp
+2020-07-10 19:15:59,400 [INFO] CodeEngine:188 - oldGeneratedFile, M:\stm32\GEOPTICS\DisplaySTM32F4\MXTmpFiles\rtos_obj_creat.tmp_save
+2020-07-10 19:15:59,496 [INFO] CodeEngine:206 - Generated code: M:\stm32\GEOPTICS\DisplaySTM32F4\MXTmpFiles\rtos_obj_creat.tmp
+2020-07-10 19:15:59,504 [INFO] CodeEngine:188 - oldGeneratedFile, M:\stm32\GEOPTICS\DisplaySTM32F4\MXTmpFiles\rtos_kernelStart.tmp_save
+2020-07-10 19:15:59,592 [INFO] CodeEngine:206 - Generated code: M:\stm32\GEOPTICS\DisplaySTM32F4\MXTmpFiles\rtos_kernelStart.tmp
+2020-07-10 19:15:59,608 [INFO] CodeEngine:188 - oldGeneratedFile, M:\stm32\GEOPTICS\DisplaySTM32F4\MXTmpFiles\rtos_default_thread.tmp_save
+2020-07-10 19:15:59,688 [INFO] CodeEngine:206 - Generated code: M:\stm32\GEOPTICS\DisplaySTM32F4\MXTmpFiles\rtos_default_thread.tmp
+2020-07-10 19:15:59,696 [INFO] CodeEngine:188 - oldGeneratedFile, M:\stm32\GEOPTICS\DisplaySTM32F4\MXTmpFiles\rtos_threads.tmp_save
+2020-07-10 19:15:59,784 [INFO] CodeEngine:206 - Generated code: M:\stm32\GEOPTICS\DisplaySTM32F4\MXTmpFiles\rtos_threads.tmp
+2020-07-10 19:15:59,808 [INFO] CodeEngine:188 - oldGeneratedFile, M:\stm32\GEOPTICS\DisplaySTM32F4\Core\Inc\FreeRTOSConfig.h_save
+2020-07-10 19:15:59,928 [INFO] CodeEngine:206 - Generated code: M:\stm32\GEOPTICS\DisplaySTM32F4\Core\Inc\FreeRTOSConfig.h
+2020-07-10 19:15:59,960 [INFO] CodeEngine:188 - oldGeneratedFile, M:\stm32\GEOPTICS\DisplaySTM32F4\Core\Src\freertos.c_save
+2020-07-10 19:16:00,144 [INFO] CodeEngine:206 - Generated code: M:\stm32\GEOPTICS\DisplaySTM32F4\Core\Src\freertos.c
+2020-07-10 19:16:00,152 [INFO] LogOutputStream:76 - [STDOUT_REDIRECT] Command line
+2020-07-10 19:16:00,152 [INFO] LogOutputStream:76 - [STDOUT_REDIRECT] Debug : prepare data for I2C
+2020-07-10 19:16:00,152 [INFO] LogOutputStream:76 - [STDOUT_REDIRECT] Command line test
+2020-07-10 19:16:00,168 [INFO] CodeEngine:188 - oldGeneratedFile, M:\stm32\GEOPTICS\DisplaySTM32F4\Core\Src\i2c.c_save
+2020-07-10 19:16:00,312 [INFO] CodeEngine:206 - Generated code: M:\stm32\GEOPTICS\DisplaySTM32F4\Core\Src\i2c.c
+2020-07-10 19:16:00,320 [INFO] CodeEngine:188 - oldGeneratedFile, M:\stm32\GEOPTICS\DisplaySTM32F4\Core\Inc\i2c.h_save
+2020-07-10 19:16:00,416 [INFO] CodeEngine:206 - Generated code: M:\stm32\GEOPTICS\DisplaySTM32F4\Core\Inc\i2c.h
+2020-07-10 19:16:00,416 [INFO] LogOutputStream:76 - [STDOUT_REDIRECT] Command line
+2020-07-10 19:16:00,424 [INFO] LogOutputStream:76 - [STDOUT_REDIRECT] Debug : prepare data for IWDG
+2020-07-10 19:16:00,424 [INFO] LogOutputStream:76 - [STDOUT_REDIRECT] Command line test
+2020-07-10 19:16:00,432 [INFO] CodeEngine:188 - oldGeneratedFile, M:\stm32\GEOPTICS\DisplaySTM32F4\Core\Src\iwdg.c_save
+2020-07-10 19:16:00,552 [INFO] CodeEngine:206 - Generated code: M:\stm32\GEOPTICS\DisplaySTM32F4\Core\Src\iwdg.c
+2020-07-10 19:16:00,560 [INFO] CodeEngine:188 - oldGeneratedFile, M:\stm32\GEOPTICS\DisplaySTM32F4\Core\Inc\iwdg.h_save
+2020-07-10 19:16:00,656 [INFO] CodeEngine:206 - Generated code: M:\stm32\GEOPTICS\DisplaySTM32F4\Core\Inc\iwdg.h
+2020-07-10 19:16:00,656 [INFO] LogOutputStream:76 - [STDOUT_REDIRECT] Command line
+2020-07-10 19:16:00,656 [INFO] LogOutputStream:76 - [STDOUT_REDIRECT] Debug : prepare data for SPI
+2020-07-10 19:16:00,656 [INFO] LogOutputStream:76 - [STDOUT_REDIRECT] Command line test
+2020-07-10 19:16:00,664 [INFO] CodeEngine:188 - oldGeneratedFile, M:\stm32\GEOPTICS\DisplaySTM32F4\Core\Src\spi.c_save
+2020-07-10 19:16:00,824 [INFO] CodeEngine:206 - Generated code: M:\stm32\GEOPTICS\DisplaySTM32F4\Core\Src\spi.c
+2020-07-10 19:16:00,832 [INFO] CodeEngine:188 - oldGeneratedFile, M:\stm32\GEOPTICS\DisplaySTM32F4\Core\Inc\spi.h_save
+2020-07-10 19:16:00,936 [INFO] CodeEngine:206 - Generated code: M:\stm32\GEOPTICS\DisplaySTM32F4\Core\Inc\spi.h
+2020-07-10 19:16:00,936 [INFO] LogOutputStream:76 - [STDOUT_REDIRECT] Command line
+2020-07-10 19:16:00,936 [INFO] LogOutputStream:76 - [STDOUT_REDIRECT] Debug : prepare data for TIM
+2020-07-10 19:16:00,944 [INFO] LogOutputStream:76 - [STDOUT_REDIRECT] Command line test
+2020-07-10 19:16:00,952 [INFO] CodeEngine:188 - oldGeneratedFile, M:\stm32\GEOPTICS\DisplaySTM32F4\Core\Src\tim.c_save
+2020-07-10 19:16:01,192 [INFO] CodeEngine:206 - Generated code: M:\stm32\GEOPTICS\DisplaySTM32F4\Core\Src\tim.c
+2020-07-10 19:16:01,208 [INFO] CodeEngine:188 - oldGeneratedFile, M:\stm32\GEOPTICS\DisplaySTM32F4\Core\Inc\tim.h_save
+2020-07-10 19:16:01,344 [INFO] CodeEngine:206 - Generated code: M:\stm32\GEOPTICS\DisplaySTM32F4\Core\Inc\tim.h
+2020-07-10 19:16:01,344 [INFO] LogOutputStream:76 - [STDOUT_REDIRECT] Command line
+2020-07-10 19:16:01,344 [INFO] LogOutputStream:76 - [STDOUT_REDIRECT] Debug : prepare data for USART
+2020-07-10 19:16:01,352 [INFO] LogOutputStream:76 - [STDOUT_REDIRECT] Command line test
+2020-07-10 19:16:01,360 [INFO] CodeEngine:188 - oldGeneratedFile, M:\stm32\GEOPTICS\DisplaySTM32F4\Core\Src\usart.c_save
+2020-07-10 19:16:01,560 [INFO] CodeEngine:206 - Generated code: M:\stm32\GEOPTICS\DisplaySTM32F4\Core\Src\usart.c
+2020-07-10 19:16:01,576 [INFO] CodeEngine:188 - oldGeneratedFile, M:\stm32\GEOPTICS\DisplaySTM32F4\Core\Inc\usart.h_save
+2020-07-10 19:16:01,736 [INFO] CodeEngine:206 - Generated code: M:\stm32\GEOPTICS\DisplaySTM32F4\Core\Inc\usart.h
+2020-07-10 19:16:01,736 [INFO] LogOutputStream:76 - [STDOUT_REDIRECT] Debug : prepare data for NVIC
+2020-07-10 19:16:01,744 [INFO] LogOutputStream:76 - [STDOUT_REDIRECT] Command line test
+2020-07-10 19:16:01,784 [INFO] CodeEngine:188 - oldGeneratedFile, M:\stm32\GEOPTICS\DisplaySTM32F4\Core\Src\stm32f4xx_it.c_save
+2020-07-10 19:16:01,976 [INFO] CodeEngine:206 - Generated code: M:\stm32\GEOPTICS\DisplaySTM32F4\Core\Src\stm32f4xx_it.c
+2020-07-10 19:16:02,008 [INFO] CodeEngine:188 - oldGeneratedFile, M:\stm32\GEOPTICS\DisplaySTM32F4\Core\Inc\stm32f4xx_it.h_save
+2020-07-10 19:16:02,144 [INFO] CodeEngine:206 - Generated code: M:\stm32\GEOPTICS\DisplaySTM32F4\Core\Inc\stm32f4xx_it.h
+2020-07-10 19:16:02,200 [INFO] CodeEngine:188 - oldGeneratedFile, M:\stm32\GEOPTICS\DisplaySTM32F4\Core\Src\stm32f4xx_hal_msp.c_save
+2020-07-10 19:16:02,376 [INFO] CodeEngine:206 - Generated code: M:\stm32\GEOPTICS\DisplaySTM32F4\Core\Src\stm32f4xx_hal_msp.c
+2020-07-10 19:16:02,392 [INFO] CodeEngine:188 - oldGeneratedFile, M:\stm32\GEOPTICS\DisplaySTM32F4\MXTmpFiles\system.tmp_save
+2020-07-10 19:16:02,512 [INFO] CodeEngine:206 - Generated code: M:\stm32\GEOPTICS\DisplaySTM32F4\MXTmpFiles\system.tmp
+2020-07-10 19:16:02,520 [INFO] CodeEngine:188 - oldGeneratedFile, M:\stm32\GEOPTICS\DisplaySTM32F4\Core\Src\stm32f4xx_hal_timebase_tim.c_save
+2020-07-10 19:16:02,656 [INFO] CodeEngine:206 - Generated code: M:\stm32\GEOPTICS\DisplaySTM32F4\Core\Src\stm32f4xx_hal_timebase_tim.c
+2020-07-10 19:16:02,672 [INFO] CodeEngine:188 - oldGeneratedFile, M:\stm32\GEOPTICS\DisplaySTM32F4\Core\Inc\stm32f4xx_hal_conf.h_save
+2020-07-10 19:16:02,800 [INFO] CodeEngine:206 - Generated code: M:\stm32\GEOPTICS\DisplaySTM32F4\Core\Inc\stm32f4xx_hal_conf.h
+2020-07-10 19:16:02,864 [INFO] CodeEngine:188 - oldGeneratedFile, M:\stm32\GEOPTICS\DisplaySTM32F4\Core\Inc\main.h_save
+2020-07-10 19:16:03,240 [INFO] CodeEngine:206 - Generated code: M:\stm32\GEOPTICS\DisplaySTM32F4\Core\Inc\main.h
+2020-07-10 19:16:03,264 [INFO] CodeEngine:188 - oldGeneratedFile, M:\stm32\GEOPTICS\DisplaySTM32F4\Core\Src\main.c_save
+2020-07-10 19:16:03,448 [INFO] CodeEngine:206 - Generated code: M:\stm32\GEOPTICS\DisplaySTM32F4\Core\Src\main.c
+2020-07-10 19:16:07,170 [INFO] ProjectBuilder:2002 - Time for Copy HAL[1] : 2914mS.
+2020-07-10 19:16:07,210 [INFO] ProjectBuilder:2727 - Project Generator version: 3.7.1
+2020-07-10 19:16:08,234 [INFO] ConfigFileManager:1066 - The Die is : DIE413
+2020-07-10 19:16:11,234 [INFO] ProjectBuilder:2894 - Time for Generating toolchain IDE Files: 4024mS.
+2020-07-10 19:16:11,234 [INFO] ProjectBuilder:1878 - Time for Copy CMSIS : 0mS.
+2020-07-10 19:16:11,234 [INFO] ProjectBuilder:1878 - Time for Copy CMSIS : 0mS.
+2020-07-12 20:46:34,994 [INFO] Activator:176 - 
+
+
+2020-07-12 20:46:35,030 [INFO] Activator:177 - !SESSION log4j initialized

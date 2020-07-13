@@ -203,7 +203,7 @@ void StartDefaultTask(void const * argument)
 	HAL_IWDG_Init(&hiwdg);											// ЗАПУСК WATHDOG
 	HAL_TIM_Base_Start_IT(&htim7);									// ЗАПУСК ТАЙМЕРА UP_TIME
 //	HAL_TIM_Base_Start_IT(&htim14);									// ЗАПУСК ТАЙМЕРА UP_TIME
-	HAL_TIM_Base_Start_IT(&htim13);									// ЗАПУСК ТАЙМЕРА WDG_TIME
+
 	HAL_ADC_Start_DMA(&hadc1,(uint32_t*)&ADC_val, 5);				// ЗАПУСК АЦП В РЕЖ�?МЕ DMA
 
 	datastring[ctrl_string_1].number = ctrl_string_1;
@@ -224,6 +224,8 @@ void StartDefaultTask(void const * argument)
 	if(!HSE_status){
 		HAL_GPIO_WritePin(SYM_LED_B_GPIO_Port, SYM_LED_B_Pin, GPIO_PIN_SET);
 	}
+	osDelay(500);
+	HAL_TIM_Base_Start_IT(&htim13);									// ЗАПУСК ТАЙМЕРА WDG_TIME
   /* Infinite loop */
   for(;;)
   {
@@ -327,18 +329,6 @@ void StartDisplayTask(void const * argument)
 
 			u8g2_SetDrawColor(&u8g2, 1);
 
-			// ВВОД�?М В БУФЕР Д�?СПЛЕЯ 4 СТРОК�?, НАЧ�?НАЯ С НАЧАЛА ПОЛОЖЕН�?Я КУРСОРА
-//			for(uint8_t i = cursor; i < cursor + 4; i++){
-//				if(i > rdy_count) i = 0;
-//				u8g2_DrawUTF8(&u8g2, 0, 15+ 15 * (i - cursor),(char *) rdy[i]->buf);
-//
-//				// ВВОД�?М В БУФЕР Д�?СПЛЕЯ ЗНАК�? С�?МВОЛОВ ГРАДУСА СТРОК�? В МЕСТА, НА КОТОРЫХ ОН�? РАСПОЛОЖЕНЫ
-//				for(uint8_t j = 0; j < degree_sym_amount; j++){
-//					if(rdy[i]->degreeSym[j] != '\0')
-//					DrawSym(&u8g2, rdy[i]->degreeSym[j] * 7 + 7, 15 + 15 * (i - cursor), 176);
-//				}
-//			}
-
 			show_count = 4;
 			show_pointer = cursor;
 
@@ -391,7 +381,7 @@ void StartDisplayTask(void const * argument)
 			displayOFF_del = HAL_GetTick();
 
 			while(HAL_GetTick() - displayOFF_del < PowerOFF_delay - 10){
-				u8g2_ClearDisplay(&u8g2);
+				u8g2_ClearBuffer(&u8g2);
 				OFF_Window(&u8g2);
 			}
 			u8g2_ClearDisplay(&u8g2);
@@ -502,6 +492,10 @@ void StartDataTask(void const * argument)
 
 						// ЕСЛ�? ВМЕСТО НОМЕРА СТРОК�? НАЙДЕНА КОМ�?НАЦ�?Я CRC - ПАКЕТ ОКОНЧЕН, ВЫХОД�?М �?З ПАРС�?НГА
 						if(FindString((uint8_t *)&uart_buf, UartBufSize, &pointer, "CRC", 3)){
+							break;
+						}
+
+						if(uart_buf[pointer] == (uint8_t)';'){
 							break;
 						}
 
@@ -640,7 +634,12 @@ void StartDataTask(void const * argument)
 		if(uptime_tick - last_transmit > mother_wdgtime && uptime_tick - mother_restart_last > mother_wdgtime){
 			HAL_GPIO_WritePin(STM32_Relay_mother_GPIO_Port, STM32_Relay_mother_Pin, GPIO_PIN_RESET);
 			HAL_GPIO_WritePin(SYM_LED_G_GPIO_Port, SYM_LED_G_Pin, GPIO_PIN_SET);
-			osDelay(10000);
+			mother_restart_last = uptime_tick;
+			while(uptime_tick - mother_restart_last >10000){
+				osDelay(1000);
+				WDG_TackArr[1] = 1;
+			}
+
 			HAL_GPIO_WritePin(SYM_LED_G_GPIO_Port, SYM_LED_G_Pin, GPIO_PIN_RESET);
 			HAL_GPIO_WritePin(STM32_Relay_mother_GPIO_Port, STM32_Relay_mother_Pin, GPIO_PIN_SET);
 			mother_restart_last = uptime_tick;
@@ -761,7 +760,7 @@ void StartControlTask(void const * argument)
 
 		ConnHandler(&con1_mem,&con2_mem);
 
-		if(HAL_GetTick() - ADC_stat_time > 100){
+		if(ADC_summ_count < 5 && HAL_GetTick() - ADC_stat_time > 90){
 			for(uint8_t i = 0; i < 5; i++){
 				ADC_statistics[i][ADC_summ_count] = ADC_val[i];
 			}
@@ -776,7 +775,7 @@ void StartControlTask(void const * argument)
 		}
 		else UTC_show_flag = 0;
 
-		but_buf[0] = butmem & STM32_BUTTON_1_Pin;						// КНОПКА ПРОКУРТК�? ВН�?З
+		but_buf[0] = (butmem & STM32_BUTTON_1_Pin) >> 1;			    // КНОПКА ПРОКУРТК�? ВН�?З
 		but_buf[1] = butmem & STM32_BUTTON_2_Pin;						// КНОПКА ПРОКРУТК�? ВВЕРХ
 		but_buf[2] = flash_on;											// КНОПКА ЗАП�?С�? ВО ФЛЭШ
 		but_buf[3] = switch_off;										// КНОПКА ВЫКЛЮЧЕН�?Я
@@ -816,8 +815,9 @@ void StartControlTask(void const * argument)
 
 			/*- - - - - - - -  Строка_№2_(РЕЛЕ/DC) - - - - - - - -*/
 				case ctrl_string_2:
-
-					datastring[i].number = i;
+					for(uint8_t j = 0; j < string_size; j++){
+						datastring[i].buf[j] = '\0';
+					}
 
 					RB_count = 0;
 
@@ -842,7 +842,10 @@ void StartControlTask(void const * argument)
 
 			/*- - - - - - - - -  Строка_№3_(КНОПК�?) - - - - - - - -*/
 				case ctrl_string_3:
-					datastring[i].number = i;
+					for(uint8_t j = 0; j < string_size; j++){
+						datastring[i].buf[j] = '\0';
+					}
+
 					RB_count = 0;
 
 					// ЗАПОЛНЯЕМ СТРОКУ, �?СПОЛЬЗУЯ ШАБЛОН
@@ -866,7 +869,9 @@ void StartControlTask(void const * argument)
 
 			/*- - - - - - - - Строка_№4_(ТЕМПЕРАТУРА) - - - - - - -*/
 				case ctrl_string_4:
-					datastring[i].number = i;
+					for(uint8_t j = 0; j < string_size; j++){
+						datastring[i].buf[j] = '\0';
+					}
 					adc_count = 0;
 					adc_str_count = 0;
 
@@ -936,6 +941,9 @@ void StartControlTask(void const * argument)
 
 				/*- - - - - - - - - Строка_№5_(ОПТОПАРЫ) - - - - - - - -*/
 					case ctrl_string_5:
+						for(uint8_t j = 0; j < string_size; j++){
+							datastring[i].buf[j] = '\0';
+						}
 						datastring[i].number = i;
 						adc_count = 0;
 						adc_str_count = 0;
@@ -950,7 +958,9 @@ void StartControlTask(void const * argument)
 						break;
 				/*- - - - - - - - - Строка_№6_(UP_time) - - - - - - - -*/
 					case ctrl_string_6:
-
+						for(uint8_t j = 0; j < string_size; j++){
+							datastring[i].buf[j] = '\0';
+						}
 						adc_count = 0;
 						datastring[i].buf[adc_count] = (uint8_t)'U';
 						adc_count++;
@@ -968,7 +978,9 @@ void StartControlTask(void const * argument)
 						break;
 					/*- - - - - - - - - Строка_№8_(ADC) - - - - - - - -*/
 					case ctrl_string_8:
-
+						for(uint8_t j = 0; j < string_size; j++){
+							datastring[i].buf[j] = '\0';
+						}
 						adc_count = 0;
 						adc_str_count = 0;
 
@@ -1070,10 +1082,15 @@ void StartControlTask(void const * argument)
 			itoa(crc32, (char *) &crc_hex_buf, 16);
 
 			// ЗАП�?СЫВАЕМ ПОС�?МВОЛЬНО СТРОКОВОЕ ЗНАЧЕН�?Е CRC32
-			for(uint8_t i = 0; i < strlen((const char *) &crc_hex_buf); i++){
+			for(uint8_t i = 0; i < 8; i++){
 
 				// Т.К itoa ПЕРЕВОД�?Т В HEX �?СПОЛЬЗУЯ МАЛЕНЬК�?Е БУКВЫ, МЕНЯЕМ �?Х НА БОЛЬШ�?Е. см_ФУНКУЮ BigLatter()
-				sendBuf[sB_pointer] = BigLatter(crc_hex_buf[i]);
+				if(8 - strlen((char*)&crc_hex_buf) > i){
+					sendBuf[sB_pointer] = '0';
+				}
+				else{
+					sendBuf[sB_pointer] = BigLatter(crc_hex_buf[i]);
+				}
 				sB_pointer++;
 			}
 
@@ -1261,26 +1278,6 @@ void ADC_Read12vHandler(){
 	taskEXIT_CRITICAL_FROM_ISR(uxSavedInterruptStatus);
 }
 
-//void WriteToMemory_I2C(uint32_t *data){
-////	HAL_I2C_Master_Transmit(&hi2c1,0b001, &i2c_go, 2, 1000);
-//}
-//
-//uint32_t U8toU32(uint8_t *U8){
-//	uint32_t U32;
-//	U32 = U8[0]<<24;
-//	U32 += U8[1]<<16;
-//	U32 += U8[2]<<8;
-//	U32 += U8[3];
-//	return U32;
-//}
-//
-//uint32_t ReadToMemory_I2C(uint8_t addres,uint8_t memry_pointer){
-//	uint16_t read_mem[4];
-//	HAL_I2C_Master_Transmit(&hi2c1,addres, &memry_pointer, 1, 1000);
-//	HAL_I2C_Master_Receive(&hi2c1,addres, &read_mem, 4, 1000);
-//
-//	return U8toU32(&read_mem);
-//}
 
 
 /*
@@ -1392,6 +1389,8 @@ void PowerON(u8g2_t* u8g2){
 
 void PowerOFF(){
 
+	uint32_t last_time = 0;
+
 	for(uint8_t i = 0; i < 4; i++){
 		HAL_GPIO_WritePin(STM32_ZUMMER_GPIO_Port, STM32_ZUMMER_Pin, GPIO_PIN_SET);
 		osDelay(30);
@@ -1401,7 +1400,11 @@ void PowerOFF(){
 
 	display_stat = 0;
 
-	osDelay(PowerOFF_delay);
+
+	while(HAL_GetTick()-last_time < PowerOFF_delay){
+		HAL_IWDG_Refresh(&hiwdg);
+		osDelay(500);
+	}
 
 //	vTaskDelete(myDisplayTaskHandle);
 

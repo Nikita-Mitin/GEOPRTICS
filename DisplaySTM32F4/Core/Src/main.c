@@ -198,10 +198,11 @@ void OFF_Window(u8g2_t *u8g2){
 	u8g2_DrawUTF8(u8g2, 3, 62, "Выключение");
 	u8g2_SendBuffer(u8g2);
 
+	osDelay(700);
 	for(uint8_t i = 0; i < 3; i++){
-		osDelay(700);
 		u8g2_DrawUTF8(u8g2, 90 + i*10, 62, ".");
 		u8g2_SendBuffer(u8g2);
+		osDelay(700);
 	}
 }
 
