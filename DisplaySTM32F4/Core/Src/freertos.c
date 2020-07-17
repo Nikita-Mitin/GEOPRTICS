@@ -215,6 +215,7 @@ void StartDefaultTask(void const * argument)
 	datastring[ctrl_string_7].number = ctrl_string_7;
 	datastring[ctrl_string_8].number = ctrl_string_8;
 	datastring[ctrl_string_9].number = ctrl_string_9;
+	datastring[ctrl_string_10].number = ctrl_string_10;
 
 	PutString(&datastring[ctrl_string_9], VERS, 0);
 
@@ -380,7 +381,7 @@ void StartDisplayTask(void const * argument)
 		case 0:
 			displayOFF_del = HAL_GetTick();
 
-			while(HAL_GetTick() - displayOFF_del < PowerOFF_delay - 10){
+			while(HAL_GetTick() - displayOFF_del < PowerOFF_delay - 10 || displayOFF_del > HAL_GetTick()){
 				u8g2_ClearBuffer(&u8g2);
 				OFF_Window(&u8g2);
 			}
@@ -623,7 +624,7 @@ void StartDataTask(void const * argument)
 
 		// ЕСЛ�? ДАННЫЕ НЕ ОБНОВЛЯЮТСЯ КАКОЕ ТО ВРЕМЯ,
 		// ПЕРЕЗАПУСКАЕМ UART, ДЛЯ �?ЗБЕЖАН�?Я ВОЗМОЖНЫХ ОШ�?БОК
-		if(HAL_GetTick() - restart_val > restart_time){
+		if(HAL_GetTick() - restart_val > restart_time || restart_val > HAL_GetTick()){
 			for(uint16_t i = 0; i < UartBufSize; i++){
 				uart_buf[i] = '\0';
 			}
@@ -692,7 +693,7 @@ void StartControlTask(void const * argument)
 								STM32_OUT_REL_4_GPIO_Port};			//
 	uint8_t RB_count = 0;										// РЕЛЕ/DC СЧЕТЧ�?К
 
-/*--------------------------- ФЛАГ�? СОСТОЯН�?Я ---------------------------*/
+/*-------------------------- ФЛАГ�? СОСТОЯН�?Я ---------------------------*/
 	uint8_t switch_off = 0;										// ФЛАГ ВЫКЛЮЧЕН�?Я П�?ТАН�?Я
 	uint8_t flash_on = 0;										// ФЛАГ ЗАП�?С�? В ФЛЭШ
 
@@ -731,6 +732,7 @@ void StartControlTask(void const * argument)
 
 	uint8_t con1_mem = 0;
 	uint8_t con2_mem = 0;
+
 /*-------------------------- ФУНКЦ�?�? ЗАПУСКА ----------------------------*/
 //	HAL_ADC_Start_DMA(&hadc1,(uint32_t*)&ADC_val,5);			// ЗАПУСК АЦП В РЕЖ�?МЕ DMA
 
@@ -760,7 +762,7 @@ void StartControlTask(void const * argument)
 
 		ConnHandler(&con1_mem,&con2_mem);
 
-		if(ADC_summ_count < 5 && HAL_GetTick() - ADC_stat_time > 90){
+		if(ADC_summ_count < 5 && (HAL_GetTick() - ADC_stat_time > 50 || ADC_stat_time > HAL_GetTick())){
 			for(uint8_t i = 0; i < 5; i++){
 				ADC_statistics[i][ADC_summ_count] = ADC_val[i];
 			}
@@ -787,6 +789,15 @@ void StartControlTask(void const * argument)
 		opt_buf[4] = HAL_GPIO_ReadPin(STM32_Conn_1_GPIO_Port,STM32_Conn_1_Pin);
 		opt_buf[5] = HAL_GPIO_ReadPin(STM32_Conn_2_GPIO_Port,STM32_Conn_2_Pin);
 
+
+//		I2C_Write(&hi2c1, 0x50, 2, 1);
+//		I2C_Read(&hi2c1, 0x50, &i2c_r, 1);
+
+//		HAL_I2C_Mem_Write(&hi2c1, 0x50<<1,0x5, 1,(uint8_t*) &uptime_tick, 1, 300);
+
+
+		osDelay(10);
+
 /*--------------- ОБРАБОТАВАЕМ и ВЫВОД�?М С�?ГНАЛЫ НА П�?НЫ ---------------*/
 
 		// ПАРС�?М СЛУЖЕБНЫЕ СТРОК�?
@@ -806,7 +817,7 @@ void StartControlTask(void const * argument)
 
 
 
-		if(HAL_GetTick() - transmit_timer > transmit_time){
+		if(HAL_GetTick() - transmit_timer > transmit_time || transmit_timer > HAL_GetTick()){
 /*------------------------- СОСТАВЛЯЕМ СТРОК�? --------------------------*/
 
 			// ПРОБЕГАЕМ ВСЕ СТРОК�? КНОТРОЛЯ (Ц�?КЛ ТУТ Л�?ШН�?Й, НО ПУСТЬ ПОКА БУДЕТ)
@@ -1105,13 +1116,13 @@ void StartControlTask(void const * argument)
 			ADC_summ_count = 0;
 		}
 
-		if(HAL_GetTick() - flash_transmit_timer > transmit_time * 3){
+		if(HAL_GetTick() - flash_transmit_timer > transmit_time * 3 ||  flash_transmit_timer > HAL_GetTick()){
 			flash_on = 0;
 
 		}
 
 /*------------ ОБРАБАТЫВАЕМ КНОПК�? ВЫКЛЮЧЕН�?Я �? ЗАП�?С�? FLASH --------------*/
-		if(but_buf[3] && (HAL_GetTick() - power_butthold > OFF_delay)){
+		if(but_buf[3] && (HAL_GetTick() - power_butthold > OFF_delay || power_butthold > power_butthold)){
 			PowerOFF(&active.DISP);												// КНОПКА ВЫКЛЮЧЕН�?Я
 		}
 
@@ -1229,6 +1240,30 @@ void WDG_tim13_Handler(){
 	HAL_GPIO_WritePin(SYM_LED_B_GPIO_Port, SYM_LED_B_Pin, GPIO_PIN_RESET);
 }
 
+void Send32toMem(I2C_HandleTypeDef *hi2c, uint8_t DevAddress, uint8_t MemAddress, size_t MemAddSize, uint32_t pData, uint32_t Timeout){
+	uint8_t bytes[4] = {'\0'};
+
+	for(uint8_t i = 0; i < 4; i++){
+		bytes[i] = (uint8_t)pData;
+		pData >>= 8;
+	}
+
+	HAL_I2C_Mem_Write(hi2c, DevAddress, MemAddress, MemAddSize, (uint8_t*) &bytes, 4, Timeout);
+
+}
+
+uint32_t Read32toMem(I2C_HandleTypeDef *hi2c, uint8_t DevAddress, uint8_t MemAddress, size_t MemAddSize, uint32_t Timeout){
+	uint8_t bytes[4] = {'\0'};
+	uint32_t data = 0;
+	HAL_I2C_Mem_Read(hi2c, DevAddress, MemAddress, MemAddSize, (uint8_t*) &bytes, 4, Timeout);
+
+	for(uint8_t i = 0; i < 4; i++){
+		data += (uint32_t) bytes[i] << (8 * i);
+	}
+
+	return data;
+}
+
 uint16_t ADC_Mean(uint16_t* ADC_arr, uint8_t len){
 	uint16_t ADC_mean = 0;
 	for(uint8_t i = 0; i < len; i++){
@@ -1237,6 +1272,7 @@ uint16_t ADC_Mean(uint16_t* ADC_arr, uint8_t len){
 
 	return ADC_mean/len;
 }
+
 
 uint16_t ADC_to_Volt(uint16_t adc_val){
 	return (adc_val*330)/4095;
@@ -1311,6 +1347,34 @@ void HAL_ADC_LevelOutOfWindowCallback(ADC_HandleTypeDef* hadc){
 	taskEXIT_CRITICAL_FROM_ISR(uxSavedInterruptStatus);
 }
 
+
+void I2C_Write(I2C_HandleTypeDef *hi, uint8_t ADDR, uint8_t *sent_i2c, size_t size){
+
+	HAL_I2C_Master_Transmit(hi, (uint16_t)ADDR, sent_i2c, size, 1000);
+//		if (HAL_I2C_GetError(hi) != HAL_I2C_ERROR_AF)
+//
+//			{
+//				//место_для_ошибки
+//			}
+//	}
+}
+
+void I2C_Read(I2C_HandleTypeDef *hi, uint8_t ADDR, uint8_t *sent_i2c, size_t size){
+
+	HAL_I2C_Master_Receive(hi, (uint16_t)ADDR, sent_i2c, size, 1000);
+//
+//		if (HAL_I2C_GetError(hi) != HAL_I2C_ERROR_AF){
+//
+//		}
+//
+//	}
+}
+
+/*
+ * ФУНКЦ�?Я ОТКЛЮЧЕН�?Я С�?СТЕМЫ
+ * ОТКЛЮЧАЕТ
+ */
+
 void PowerON(u8g2_t* u8g2){
 
 //	uint32_t check12v = 0;
@@ -1382,11 +1446,6 @@ void PowerON(u8g2_t* u8g2){
 	HAL_GPIO_WritePin(STM32_ZUMMER_GPIO_Port, STM32_ZUMMER_Pin, GPIO_PIN_RESET);
 }
 
-/*
- * ФУНКЦ�?Я ОТКЛЮЧЕН�?Я С�?СТЕМЫ
- * ОТКЛЮЧАЕТ
- */
-
 void PowerOFF(){
 
 	uint32_t last_time = 0;
@@ -1401,7 +1460,7 @@ void PowerOFF(){
 	display_stat = 0;
 
 
-	while(HAL_GetTick()-last_time < PowerOFF_delay){
+	while(HAL_GetTick()-last_time < PowerOFF_delay || last_time > HAL_GetTick()){
 		HAL_IWDG_Refresh(&hiwdg);
 		osDelay(500);
 	}
@@ -1455,14 +1514,6 @@ void SleepMode(){
 			}
 		}
 
-//		if(PWM_val < 3000 && direct){
-//			PWM_val++;
-//		}
-//		if(PWM_val > 0 && !direct){
-//			PWM_val--;
-//		}
-//		if(PWM_val == 0) direct = 1;
-//		if(PWM_val >= 3000) direct = 0;
 
 		angl = (angl > 3.141) ? 0 : angl + 0.004;
 		PWM_val = (sin(angl)) * 1000;
@@ -1665,6 +1716,7 @@ void ServiceModeButtonHandler(uint8_t *mem, uint8_t *mem2, uint32_t *hold, uint1
 			datastring[ctrl_string_7].status = service_mode;
 			datastring[ctrl_string_8].status = service_mode;
 			datastring[ctrl_string_9].status = service_mode;
+			datastring[ctrl_string_10].status = service_mode;
 		}
 	}
 	else{

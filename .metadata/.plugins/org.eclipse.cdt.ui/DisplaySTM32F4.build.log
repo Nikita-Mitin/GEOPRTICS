@@ -1,6 +1,10 @@
-13:56:41 **** Incremental Build of configuration Debug for project DisplaySTM32F4 ****
+11:32:01 **** Incremental Build of configuration Debug for project DisplaySTM32F4 ****
 make -j4 all 
 arm-none-eabi-gcc "../Core/Src/freertos.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DUSE_HAL_DRIVER -DDEBUG -DSTM32F407xx -c -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F -I../Drivers/CMSIS/Include -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Core/Inc -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I"M:/stm32/GEOPTICS/DisplaySTM32F4/Drivers/u8g2" -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/Src/freertos.d" -MT"Core/Src/freertos.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/freertos.o"
+../Core/Src/freertos.c: In function 'StartControlTask':
+../Core/Src/freertos.c:1125:82: warning: self-comparison always evaluates to false [-Wtautological-compare]
+   if(but_buf[3] && (HAL_GetTick() - power_butthold > OFF_delay || power_butthold > power_butthold)){
+                                                                                  ^
 arm-none-eabi-gcc -o "DisplaySTM32F4.elf" @"objects.list"   -mcpu=cortex-m4 -T"M:\stm32\GEOPTICS\DisplaySTM32F4\STM32F407VGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="DisplaySTM32F4.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 Finished building target: DisplaySTM32F4.elf
  
@@ -8,13 +12,13 @@ arm-none-eabi-objdump -h -S  DisplaySTM32F4.elf  > "DisplaySTM32F4.list"
 arm-none-eabi-objcopy  -O binary  DisplaySTM32F4.elf  "DisplaySTM32F4.bin"
 arm-none-eabi-size   DisplaySTM32F4.elf 
    text	   data	    bss	    dec	    hex	filename
-  86276	    132	  40564	 126972	  1effc	DisplaySTM32F4.elf
+  86388	    132	  40564	 127084	  1f06c	DisplaySTM32F4.elf
 Finished building: default.size.stdout
- 
 Finished building: DisplaySTM32F4.bin
+ 
  
 Finished building: DisplaySTM32F4.list
  
 
-13:56:47 Build Finished. 0 errors, 0 warnings. (took 6s.413ms)
+11:32:10 Build Finished. 0 errors, 1 warnings. (took 8s.414ms)
 

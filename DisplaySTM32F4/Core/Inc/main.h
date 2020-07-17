@@ -54,7 +54,7 @@ extern "C" {
 #define string_pack_amount 	40					// макс_количество_строк_в_1-ом_пакете
 
 #define start_serv_string	155					// начало_служебных_строк
-#define start_ctrl_string	146					// начало_строк_контроля
+#define start_ctrl_string	145					// начало_строк_контроля
 
 #define degree_sym_amount	4					// максимальное_количество_знаков_градуса_в_строке
 #define UartBufSize 		4096				// размер_буфера_UART
@@ -96,6 +96,7 @@ extern "C" {
 #define ctrl_string_7		start_ctrl_string + 6					// 7-я_строка_контроля
 #define ctrl_string_8		start_ctrl_string + 7					// 7-я_строка_контроля
 #define ctrl_string_9		start_ctrl_string + 8					// 7-я_строка_контроля
+#define ctrl_string_10		start_ctrl_string + 9					// 7-я_строка_контроля
 
 /*----------------------- ДАТЧ�?К ТЕМПЕРАТУРЫ STM32 ---------------------------*/
 #define TEMP110_CAL_ADDR 	((uint16_t*) ((uint32_t) 0x1FFF7A2E))	// адрес_калиброваного_значения_при_T = 110
@@ -243,6 +244,11 @@ void PassSym(uint8_t*, size_t, uint16_t*, uint8_t);
 void PassSymCRC(uint8_t*,size_t,uint16_t*, uint8_t,buffer_t*);
 char BigLatter(char);
 
+
+
+
+void Send32toMem(I2C_HandleTypeDef *, uint8_t, uint8_t, size_t, uint32_t, uint32_t);
+uint32_t Read32toMem(I2C_HandleTypeDef *, uint8_t, uint8_t, size_t, uint32_t);
 /*-------------------- ФУНКЦ�?�? РАБОТЫ С СТРОКАМ�? string_t --------------------*/
 void PutERROR(string_t*,const char*);
 void LEDStringPars(string_t *datastring,RGB_status *leds);
